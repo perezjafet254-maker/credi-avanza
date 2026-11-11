@@ -86,6 +86,24 @@ function actualizarTextosContacto(data) {
 
   const teaElements = document.querySelectorAll(".cfg-tea");
   teaElements.forEach(el => el.textContent = `${AppState.teaReferencial.toFixed(2)}%`);
+
+  // Actualizar enlaces interactivos de WhatsApp, Teléfono y Correo
+  const numWsp = (data.whatsapp_atencion || "987654321").replace(/\D/g, "");
+  const wspLink = `https://wa.me/51${numWsp}?text=${encodeURIComponent("Hola Credi Avanza, deseo información sobre un préstamo personal.")}`;
+  document.querySelectorAll(".cfg-whatsapp-link").forEach(el => {
+    el.href = wspLink;
+    el.target = "_blank";
+  });
+
+  const numTel = (data.telefono_atencion || "017008920").replace(/[^\d+]/g, "");
+  document.querySelectorAll(".cfg-tel-link").forEach(el => {
+    el.href = `tel:${numTel}`;
+  });
+
+  const emailVal = data.email_contacto || "contacto@crediavanza.pe";
+  document.querySelectorAll(".cfg-email-link").forEach(el => {
+    el.href = `mailto:${emailVal}`;
+  });
 }
 
 /**

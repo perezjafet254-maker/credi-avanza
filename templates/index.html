@@ -1117,7 +1117,7 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
           
           <!-- Teléfono -->
-          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-fintech-sm text-center">
+          <a href="tel:+5117008920" class="cfg-tel-link block bg-white p-6 rounded-2xl border border-slate-200 shadow-fintech-sm text-center hover:border-emerald-500 hover:shadow-md transition">
             <div class="w-12 h-12 bg-emerald-100 rounded-xl text-emerald-700 flex items-center justify-center mx-auto mb-3">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
@@ -1126,10 +1126,10 @@
             <h4 class="font-bold text-slate-900 text-sm">Teléfono de Atención</h4>
             <p class="text-emerald-800 font-mono font-semibold text-sm mt-1 cfg-telefono">+51 1 700 8920</p>
             <span class="text-[11px] text-slate-500 block mt-1">Línea fija Lima y provincias</span>
-          </div>
+          </a>
 
           <!-- WhatsApp -->
-          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-fintech-sm text-center">
+          <a href="https://wa.me/51987654321" target="_blank" rel="noopener noreferrer" class="cfg-whatsapp-link block bg-white p-6 rounded-2xl border border-slate-200 shadow-fintech-sm text-center hover:border-emerald-500 hover:shadow-md transition">
             <div class="w-12 h-12 bg-emerald-100 rounded-xl text-emerald-700 flex items-center justify-center mx-auto mb-3">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
@@ -1137,11 +1137,11 @@
             </div>
             <h4 class="font-bold text-slate-900 text-sm">WhatsApp Oficial</h4>
             <p class="text-emerald-800 font-mono font-semibold text-sm mt-1 cfg-whatsapp">+51 987 654 321</p>
-            <span class="text-[11px] text-slate-500 block mt-1">Chat de orientación</span>
-          </div>
+            <span class="text-[11px] text-slate-500 block mt-1">Chat de orientación directa</span>
+          </a>
 
           <!-- Email -->
-          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-fintech-sm text-center">
+          <a href="mailto:contacto@crediavanza.pe" class="cfg-email-link block bg-white p-6 rounded-2xl border border-slate-200 shadow-fintech-sm text-center hover:border-emerald-500 hover:shadow-md transition">
             <div class="w-12 h-12 bg-emerald-100 rounded-xl text-emerald-700 flex items-center justify-center mx-auto mb-3">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
@@ -1150,7 +1150,7 @@
             <h4 class="font-bold text-slate-900 text-sm">Correo Electrónico</h4>
             <p class="text-emerald-800 font-medium text-sm mt-1 cfg-email">contacto@crediavanza.pe</p>
             <span class="text-[11px] text-slate-500 block mt-1">Consultas y soporte</span>
-          </div>
+          </a>
 
           <!-- Horario -->
           <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-fintech-sm text-center">
@@ -1343,6 +1343,17 @@
       </div>
     </div>
   </div>
+
+  <!-- Botón Flotante de WhatsApp para Atención Inmediata -->
+  <a id="btn-wsp-flotante" href="https://wa.me/51987654321?text=Hola%2C%20quisiera%20m%C3%A1s%20informaci%C3%B3n%20sobre%20un%20pr%C3%A9stamo%20en%20Credi%20Avanza" target="_blank" rel="noopener noreferrer" class="cfg-whatsapp-link fixed bottom-6 right-6 z-40 bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 rounded-full shadow-2xl flex items-center gap-2 group transition-all duration-300 hover:scale-105 border-2 border-white/90" title="Atención directa por WhatsApp">
+    <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24">
+      <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.529 1.777.781 2.791.781 3.181 0 5.767-2.587 5.767-5.766.001-3.18-2.585-5.767-5.767-5.767zm0 10.457c-.886 0-1.611-.237-2.383-.695l-.171-.102-1.767.463.471-1.722-.112-.178c-.495-.788-.756-1.55-.755-2.457.001-2.476 2.015-4.49 4.492-4.49 2.476 0 4.49 2.014 4.49 4.49 0 2.476-2.014 4.489-4.49 4.489z"/>
+      <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.176L2 22l4.981-1.306C8.423 21.524 10.154 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18.25c-1.64 0-3.18-.46-4.502-1.258l-.323-.194-2.964.777.791-2.89-.211-.336C3.93 15.01 3.45 13.54 3.45 12c0-4.714 3.836-8.55 8.55-8.55 4.714 0 8.55 3.836 8.55 8.55 0 4.714-3.836 8.55-8.55 8.55z"/>
+    </svg>
+    <span class="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-500 ease-in-out font-bold text-xs pr-1">
+      ¿Consultas? Chatea con un asesor
+    </span>
+  </a>
 
   <!-- Scripts -->
   <script src="/static/js/ubigeo.js"></script>

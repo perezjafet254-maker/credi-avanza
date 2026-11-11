@@ -12,6 +12,31 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("search-input");
   const btnExportar = document.getElementById("btn-exportar-csv");
   const configForm = document.getElementById("admin-config-form");
+  const tabBtnSolicitudes = document.getElementById("tab-btn-solicitudes");
+  const tabBtnConfig = document.getElementById("tab-btn-config");
+  const viewSolicitudes = document.getElementById("view-solicitudes");
+  const viewConfiguracion = document.getElementById("view-configuracion");
+  const btnCancelarConfig = document.getElementById("btn-cancelar-config");
+
+  function activarTab(tab) {
+    if (!viewSolicitudes || !viewConfiguracion) return;
+    if (tab === "solicitudes") {
+      viewSolicitudes.classList.remove("hidden");
+      viewConfiguracion.classList.add("hidden");
+      if (tabBtnSolicitudes) tabBtnSolicitudes.className = "px-5 py-2.5 rounded-xl font-bold text-xs bg-emerald-700 text-white shadow-sm flex items-center gap-2 transition cursor-pointer";
+      if (tabBtnConfig) tabBtnConfig.className = "px-5 py-2.5 rounded-xl font-bold text-xs bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition flex items-center gap-2 cursor-pointer shadow-sm";
+    } else {
+      viewSolicitudes.classList.add("hidden");
+      viewConfiguracion.classList.remove("hidden");
+      if (tabBtnConfig) tabBtnConfig.className = "px-5 py-2.5 rounded-xl font-bold text-xs bg-emerald-700 text-white shadow-sm flex items-center gap-2 transition cursor-pointer";
+      if (tabBtnSolicitudes) tabBtnSolicitudes.className = "px-5 py-2.5 rounded-xl font-bold text-xs bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition flex items-center gap-2 cursor-pointer shadow-sm";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+
+  if (tabBtnSolicitudes) tabBtnSolicitudes.addEventListener("click", () => activarTab("solicitudes"));
+  if (tabBtnConfig) tabBtnConfig.addEventListener("click", () => activarTab("config"));
+  if (btnCancelarConfig) btnCancelarConfig.addEventListener("click", () => cargarConfiguracionAdmin());
 
   if (ADMIN_TOKEN) {
     verificarSesion();
@@ -128,11 +153,22 @@ function actualizarMetricas(lista) {
   const aprobados = lista.filter(s => s.estado === "APROBADO").length;
   const montoTotal = lista.reduce((sum, s) => sum + s.monto, 0);
 
-  document.getElementById("stat-total").textContent = total;
-  document.getElementById("stat-pendientes").textContent = pendientes;
-  document.getElementById("stat-evaluacion").textContent = enEvaluacion;
-  document.getElementById("stat-aprobados").textContent = aprobados;
-  document.getElementById("stat-monto-total").textContent = `S/ ${montoTotal.toLocaleString("es-PE", { minimumFractionDigits: 2 })}`;
+  const statTotal = document.getElementById("stat-total");
+  const badgeTotal = document.getElementById("badge-total-solicitudes");
+  if (statTotal) statTotal.textContent = total;
+  if (badgeTotal) badgeTotal.textContent = total;
+
+  const statPendientes = document.getElementById("stat-pendientes");
+  if (statPendientes) statPendientes.textContent = pendientes;
+
+  const statEvaluacion = document.getElementById("stat-evaluacion");
+  if (statEvaluacion) statEvaluacion.textContent = enEvaluacion;
+
+  const statAprobados = document.getElementById("stat-aprobados");
+  if (statAprobados) statAprobados.textContent = aprobados;
+
+  const statMonto = document.getElementById("stat-monto-total");
+  if (statMonto) statMonto.textContent = `S/ ${montoTotal.toLocaleString("es-PE", { minimumFractionDigits: 2 })}`;
 }
 
 function aplicarFiltros() {
@@ -294,6 +330,16 @@ async function cargarConfiguracionAdmin() {
 }
 
 async function guardarConfiguracion() {
+  const btnGuardar = document.getElementById("btn-guardar-cfg");
+  const alertSuccess = document.getElementById("config-success-alert");
+  if (btnGuardar) {
+    btnGuardar.disabled = true;
+    btnGuardar.innerHTML = `<span>Guardando cambios...</span>`;
+  }
+
+  const pinInput = document.getElementById("cfg-pin");
+  const pinVal = pinInput ? pinInput.value.trim() : "";
+
   const payload = {
     tea_referencial: document.getElementById("cfg-tea").value,
     telefono_atencion: document.getElementById("cfg-tel").value,
@@ -305,6 +351,10 @@ async function guardarConfiguracion() {
     direccion_fiscal: document.getElementById("cfg-dir").value
   };
 
+  if (pinVal) {
+    payload.admin_pin = pinVal;
+  }
+
   try {
     const res = await fetch(`/api/admin/configuracion?token=${encodeURIComponent(ADMIN_TOKEN)}`, {
       method: "POST",
@@ -313,11 +363,27 @@ async function guardarConfiguracion() {
     });
 
     if (res.ok) {
-      alert("Parámetros de Credi Avanza actualizados exitosamente.");
+      if (alertSuccess) {
+        alertSuccess.classList.remove("hidden");
+        alertSuccess.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(() => alertSuccess.classList.add("hidden"), 8000);
+      } else {
+        alert("¡Parámetros de Credi Avanza actualizados exitosamente!");
+      }
+      if (pinInput) pinInput.value = "";
     } else {
-      alert("Error al actualizar la configuración.");
+      const err = await res.json().catch(() => ({}));
+      alert(`Error al actualizar la configuración: ${err.detail || "Verifica tu sesión"}`);
     }
   } catch (err) {
-    alert("Error al comunicarse con el servidor.");
+    alert("Error de conexión al comunicarse con el servidor.");
+  } finally {
+    if (btnGuardar) {
+      btnGuardar.disabled = false;
+      btnGuardar.innerHTML = `
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+        <span>Guardar y Aplicar Cambios en la Web</span>
+      `;
+    }
   }
 }

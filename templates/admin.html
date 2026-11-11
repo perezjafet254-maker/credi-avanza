@@ -81,146 +81,287 @@
     <!-- Contenido Principal -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full space-y-6">
       
-      <!-- Métricas KPI -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-        
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-          <span class="text-xs font-bold text-slate-500 uppercase">Total Solicitudes</span>
-          <div id="stat-total" class="text-2xl font-black text-slate-900 mt-1">0</div>
-        </div>
+      <!-- Selector de Pestañas Principales -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+        <div class="flex items-center gap-2">
+          <button id="tab-btn-solicitudes" type="button" class="px-5 py-2.5 rounded-xl font-bold text-xs bg-emerald-700 text-white shadow-sm flex items-center gap-2 transition cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span>Solicitudes Recibidas</span>
+            <span id="badge-total-solicitudes" class="bg-emerald-900/60 text-emerald-100 text-[10px] px-2 py-0.5 rounded-full font-black">0</span>
+          </button>
 
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-          <span class="text-xs font-bold text-amber-600 uppercase">Pendientes</span>
-          <div id="stat-pendientes" class="text-2xl font-black text-amber-600 mt-1">0</div>
-        </div>
-
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-          <span class="text-xs font-bold text-blue-600 uppercase">En Evaluación</span>
-          <div id="stat-evaluacion" class="text-2xl font-black text-blue-600 mt-1">0</div>
-        </div>
-
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-          <span class="text-xs font-bold text-emerald-600 uppercase">Aprobadas</span>
-          <div id="stat-aprobados" class="text-2xl font-black text-emerald-700 mt-1">0</div>
-        </div>
-
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm col-span-2 sm:col-span-1">
-          <span class="text-xs font-bold text-slate-500 uppercase">Monto Total</span>
-          <div id="stat-monto-total" class="text-xl font-black text-slate-900 mt-1">S/ 0.00</div>
-        </div>
-
-      </div>
-
-      <!-- Barra de Filtros, Búsqueda y Exportación -->
-      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4">
-        
-        <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-          <!-- Búsqueda rápida -->
-          <div class="relative w-full sm:w-72">
-            <input 
-              type="text" 
-              id="search-input" 
-              placeholder="Buscar por DNI, Nombre, Código..." 
-              class="input-fintech text-xs pl-9"
-            >
-            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-            </svg>
-          </div>
-
-          <!-- Filtro de Estado -->
-          <select id="filter-estado" class="input-fintech text-xs w-full sm:w-48">
-            <option value="">Todos los Estados</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="EN_EVALUACION">EN EVALUACIÓN</option>
-            <option value="APROBADO">APROBADO</option>
-            <option value="CONTACTADO">CONTACTADO</option>
-            <option value="RECHAZADO">RECHAZADO</option>
-          </select>
-        </div>
-
-        <!-- Botón Exportar CSV seguro -->
-        <div class="w-full sm:w-auto flex justify-end">
-          <button id="btn-exportar-csv" class="btn-emerald text-xs px-4 py-2.5 flex items-center gap-2 w-full sm:w-auto justify-center">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-            </svg>
-            Exportar Solicitudes (Excel / CSV)
+          <button id="tab-btn-config" type="button" class="px-5 py-2.5 rounded-xl font-bold text-xs bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition flex items-center gap-2 cursor-pointer shadow-sm">
+            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span>⚙️ Modificar Teléfonos, WhatsApp, Dirección e Info</span>
           </button>
         </div>
-
+        
+        <span class="text-xs text-slate-500 hidden sm:inline-block">Panel Administrativo Oficial</span>
       </div>
 
-      <!-- Tabla de Solicitudes -->
-      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                <th class="py-3 px-4">Código</th>
-                <th class="py-3 px-4">Solicitante</th>
-                <th class="py-3 px-4">Monto Solicitado</th>
-                <th class="py-3 px-4">Plazo</th>
-                <th class="py-3 px-4">Ubicación / Contacto</th>
-                <th class="py-3 px-4">Estado</th>
-                <th class="py-3 px-4 text-right">Acción</th>
-              </tr>
-            </thead>
-            <tbody id="solicitudes-tbody" class="divide-y divide-slate-100">
-              <!-- Renderizado dinámicamente con JS -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Sección de Configuración de la Empresa / Plataforma -->
-      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
-        <div class="border-b border-slate-200 pb-4 mb-6">
-          <h3 class="text-base font-bold text-slate-900">Configuración de Parámetros y Contacto de Credi Avanza</h3>
-          <p class="text-xs text-slate-500 mt-0.5">Modifica los datos que se muestran en el portal público sin modificar código fuente.</p>
-        </div>
-
-        <form id="admin-config-form" class="space-y-4">
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">TEA Referencial Estimada (%)</label>
-              <input type="number" step="0.01" id="cfg-tea" class="input-fintech text-xs" required>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Teléfono de Atención</label>
-              <input type="text" id="cfg-tel" class="input-fintech text-xs" required>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">WhatsApp de Atención</label>
-              <input type="text" id="cfg-wsp" class="input-fintech text-xs" required>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Correo Electrónico Oficial</label>
-              <input type="email" id="cfg-email" class="input-fintech text-xs" required>
-            </div>
-            <div class="sm:col-span-2">
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Horario de Atención</label>
-              <input type="text" id="cfg-horario" class="input-fintech text-xs" required>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Razón Social</label>
-              <input type="text" id="cfg-razon" class="input-fintech text-xs" required>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Número de RUC</label>
-              <input type="text" id="cfg-ruc" class="input-fintech text-xs font-mono" required>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Dirección Fiscal</label>
-              <input type="text" id="cfg-dir" class="input-fintech text-xs" required>
-            </div>
+      <!-- ================= VISTA 1: SOLICITUDES DE PRÉSTAMOS ================= -->
+      <div id="view-solicitudes" class="space-y-6">
+        <!-- Métricas KPI -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+            <span class="text-xs font-bold text-slate-500 uppercase">Total Solicitudes</span>
+            <div id="stat-total" class="text-2xl font-black text-slate-900 mt-1">0</div>
           </div>
 
-          <div class="pt-3 flex justify-end">
-            <button type="submit" class="btn-emerald text-xs px-6 py-2.5">
-              Guardar Cambios de Configuración
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+            <span class="text-xs font-bold text-amber-600 uppercase">Pendientes</span>
+            <div id="stat-pendientes" class="text-2xl font-black text-amber-600 mt-1">0</div>
+          </div>
+
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+            <span class="text-xs font-bold text-blue-600 uppercase">En Evaluación</span>
+            <div id="stat-evaluacion" class="text-2xl font-black text-blue-600 mt-1">0</div>
+          </div>
+
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+            <span class="text-xs font-bold text-emerald-600 uppercase">Aprobadas</span>
+            <div id="stat-aprobados" class="text-2xl font-black text-emerald-700 mt-1">0</div>
+          </div>
+
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm col-span-2 sm:col-span-1">
+            <span class="text-xs font-bold text-slate-500 uppercase">Monto Total</span>
+            <div id="stat-monto-total" class="text-xl font-black text-slate-900 mt-1">S/ 0.00</div>
+          </div>
+
+        </div>
+
+        <!-- Barra de Filtros, Búsqueda y Exportación -->
+        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4">
+          
+          <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+            <!-- Búsqueda rápida -->
+            <div class="relative w-full sm:w-72">
+              <input 
+                type="text" 
+                id="search-input" 
+                placeholder="Buscar por DNI, Nombre, Código..." 
+                class="input-fintech text-xs pl-9"
+              >
+              <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+            </div>
+
+            <!-- Filtro de Estado -->
+            <select id="filter-estado" class="input-fintech text-xs w-full sm:w-48">
+              <option value="">Todos los Estados</option>
+              <option value="PENDIENTE">PENDIENTE</option>
+              <option value="EN_EVALUACION">EN EVALUACIÓN</option>
+              <option value="APROBADO">APROBADO</option>
+              <option value="CONTACTADO">CONTACTADO</option>
+              <option value="RECHAZADO">RECHAZADO</option>
+            </select>
+          </div>
+
+          <!-- Botón Exportar CSV seguro -->
+          <div class="w-full sm:w-auto flex justify-end">
+            <button id="btn-exportar-csv" class="btn-emerald text-xs px-4 py-2.5 flex items-center gap-2 w-full sm:w-auto justify-center">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+              </svg>
+              Exportar Solicitudes (Excel / CSV)
             </button>
           </div>
+
+        </div>
+
+        <!-- Tabla de Solicitudes -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                  <th class="py-3 px-4">Código</th>
+                  <th class="py-3 px-4">Solicitante</th>
+                  <th class="py-3 px-4">Monto Solicitado</th>
+                  <th class="py-3 px-4">Plazo</th>
+                  <th class="py-3 px-4">Ubicación / Contacto</th>
+                  <th class="py-3 px-4">Estado</th>
+                  <th class="py-3 px-4 text-right">Acción</th>
+                </tr>
+              </thead>
+              <tbody id="solicitudes-tbody" class="divide-y divide-slate-100">
+                <!-- Renderizado dinámicamente con JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= VISTA 2: PANEL DE CONFIGURACIÓN Y MODIFICACIÓN DE LA WEB ================= -->
+      <div id="view-configuracion" class="space-y-6 hidden">
+        
+        <!-- Banner Informativo -->
+        <div class="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl">
+          <div class="max-w-3xl">
+            <span class="bg-emerald-500/30 text-emerald-200 text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+              Control en Tiempo Real
+            </span>
+            <h2 class="text-xl sm:text-2xl font-black mt-2">Panel para Modificar Información de la Página Web</h2>
+            <p class="text-emerald-100 text-xs sm:text-sm mt-1 leading-relaxed">
+              Todos los datos que modifiques en este formulario se actualizan automáticamente en el sitio web público: encabezado, pie de página, enlaces de WhatsApp y Libro de Reclamaciones.
+            </p>
+          </div>
+        </div>
+
+        <form id="admin-config-form" class="space-y-6">
+          
+          <!-- Bloque 1: Canales de Atención Directa -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
+            <div class="border-b border-slate-200 pb-3 mb-6">
+              <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <span>📱</span> Números de Teléfono y WhatsApp de Atención
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">Define los canales donde tus clientes podrán comunicarse directamente con Credi Avanza.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label for="cfg-wsp" class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  WhatsApp Oficial de Atención *
+                </label>
+                <div class="relative">
+                  <span class="absolute left-3.5 top-3 text-xs font-bold text-emerald-600">💬</span>
+                  <input type="text" id="cfg-wsp" class="input-fintech text-xs pl-10 font-medium" placeholder="+51 987 654 321" required>
+                </div>
+                <span class="text-[11px] text-slate-400 mt-1 block">Al hacer clic en WhatsApp en la web, el cliente abrirá un chat directo con este número.</span>
+              </div>
+
+              <div>
+                <label for="cfg-tel" class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Teléfono de Atención al Cliente (Fijo o Móvil) *
+                </label>
+                <div class="relative">
+                  <span class="absolute left-3.5 top-3 text-xs font-bold text-emerald-600">📞</span>
+                  <input type="text" id="cfg-tel" class="input-fintech text-xs pl-10 font-medium" placeholder="+51 1 700 8920" required>
+                </div>
+                <span class="text-[11px] text-slate-400 mt-1 block">Número de teléfono mostrado en la barra superior y pie de página.</span>
+              </div>
+
+              <div>
+                <label for="cfg-email" class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Correo Electrónico Oficial *
+                </label>
+                <div class="relative">
+                  <span class="absolute left-3.5 top-3 text-xs font-bold text-emerald-600">✉️</span>
+                  <input type="email" id="cfg-email" class="input-fintech text-xs pl-10 font-medium" placeholder="contacto@crediavanaza.com" required>
+                </div>
+                <span class="text-[11px] text-slate-400 mt-1 block">Correo para recepción de consultas y solicitudes de derechos ARCO.</span>
+              </div>
+
+              <div>
+                <label for="cfg-horario" class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Horario de Atención al Público *
+                </label>
+                <div class="relative">
+                  <span class="absolute left-3.5 top-3 text-xs font-bold text-emerald-600">🕒</span>
+                  <input type="text" id="cfg-horario" class="input-fintech text-xs pl-10 font-medium" placeholder="Lunes a Viernes 8:30 a.m. - 6:30 p.m. / Sáb 9:00 a.m. - 1:00 p.m." required>
+                </div>
+                <span class="text-[11px] text-slate-400 mt-1 block">Horario de soporte visible en la barra superior.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bloque 2: Razón Social, RUC y Dirección Fiscal -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
+            <div class="border-b border-slate-200 pb-3 mb-6">
+              <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <span>🏢</span> Datos Fiscales, RUC y Dirección en Perú
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">Información legal requerida por la normativa peruana mostrada en el footer y Libro de Reclamaciones.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              <div class="sm:col-span-2">
+                <label for="cfg-razon" class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Razón Social de la Empresa *
+                </label>
+                <input type="text" id="cfg-razon" class="input-fintech text-xs font-medium" placeholder="Credi Avanza Servicios Financieros S.A.C." required>
+                <span class="text-[11px] text-slate-400 mt-1 block">Nombre registrado ante SUNAT y en la documentación contractual.</span>
+              </div>
+
+              <div>
+                <label for="cfg-ruc" class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Número de RUC (11 dígitos) *
+                </label>
+                <input type="text" id="cfg-ruc" class="input-fintech text-xs font-mono font-bold" placeholder="20608945123" maxlength="11" required>
+                <span class="text-[11px] text-slate-400 mt-1 block">Número de RUC tributario activo.</span>
+              </div>
+
+              <div class="sm:col-span-3">
+                <label for="cfg-dir" class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Dirección / Domicilio Fiscal en Perú *
+                </label>
+                <div class="relative">
+                  <span class="absolute left-3.5 top-3 text-xs font-bold text-emerald-600">📍</span>
+                  <input type="text" id="cfg-dir" class="input-fintech text-xs pl-10 font-medium" placeholder="Av. Víctor Andrés Belaúnde 147, San Isidro, Lima - Perú" required>
+                </div>
+                <span class="text-[11px] text-slate-400 mt-1 block">Dirección legal visible en el pie de página de la web y en los términos del préstamo.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bloque 3: Parámetros del Simulador y Seguridad -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
+            <div class="border-b border-slate-200 pb-3 mb-6">
+              <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <span>📈</span> Tasa de Interés y Clave del Panel
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">Configuración financiera para el simulador de cuotas y credenciales de acceso.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label for="cfg-tea" class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Tasa Efectiva Anual Referencial (TEA %) *
+                </label>
+                <input type="number" step="0.01" id="cfg-tea" class="input-fintech text-xs font-mono font-bold" placeholder="28.50" required>
+                <span class="text-[11px] text-slate-400 mt-1 block">Tasa anual para el cálculo de cuotas de amortización francesa.</span>
+              </div>
+
+              <div>
+                <label for="cfg-pin" class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Nueva Clave / PIN de Acceso Administrador (Opcional)
+                </label>
+                <input type="text" id="cfg-pin" class="input-fintech text-xs font-mono" placeholder="Déjalo en blanco para mantener la actual">
+                <span class="text-[11px] text-slate-400 mt-1 block">Escribe una nueva clave solo si deseas cambiar la contraseña de ingreso al panel.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mensaje de Notificación de Éxito -->
+          <div id="config-success-alert" class="hidden p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-semibold flex items-center gap-3 shadow-sm">
+            <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold flex-shrink-0">✓</div>
+            <div>
+              <div class="font-bold text-sm text-emerald-950">¡Cambios guardados con éxito!</div>
+              <div>Los nuevos teléfonos, número de WhatsApp, dirección y datos de la empresa ya están activos en la página web pública.</div>
+            </div>
+          </div>
+
+          <!-- Botones de Acción -->
+          <div class="flex items-center justify-between pt-2">
+            <a href="/" target="_blank" class="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1.5">
+              <span>Ver sitio web público</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            </a>
+
+            <div class="flex items-center gap-3">
+              <button type="button" id="btn-cancelar-config" class="px-5 py-2.5 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition">
+                Restablecer
+              </button>
+              <button type="submit" id="btn-guardar-cfg" class="btn-emerald text-xs px-8 py-3 flex items-center gap-2 shadow-lg shadow-emerald-700/20 cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+                <span>Guardar y Aplicar Cambios en la Web</span>
+              </button>
+            </div>
+          </div>
+
         </form>
       </div>
 
