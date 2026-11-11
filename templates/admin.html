@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Panel de Asesores | Credi Avanza Perú</title>
   <!-- Tailwind CSS Local (Sin bloqueos de red) -->
   <script src="/static/js/tailwindcss.min.js"></script>
@@ -34,11 +36,11 @@
             required 
             autocomplete="current-password"
           >
-          <span class="text-[11px] text-slate-400 mt-1 block">Clave por defecto: <code class="font-mono text-emerald-800 bg-emerald-50 px-1 py-0.5 rounded">crediavanza2026</code></span>
+          <span class="text-[11px] text-slate-400 mt-1 block">Acceso protegido con cifrado PBKDF2 y límite de intentos</span>
         </div>
 
         <button type="submit" class="btn-emerald w-full py-3.5 text-sm">
-          INGRESAR AL PANEL
+          INGRESAR AL PANEL SEGURO
         </button>
       </form>
 
@@ -59,7 +61,7 @@
           <a href="/">
             <img src="/static/images/logo.svg" alt="Credi Avanza" class="h-9 w-auto brightness-200 contrast-200">
           </a>
-          <span class="bg-emerald-800 text-emerald-200 text-xs font-semibold px-2.5 py-1 rounded-lg border border-emerald-700">
+          <span id="admin-user-role-badge" class="bg-emerald-800 text-emerald-200 text-xs font-semibold px-2.5 py-1 rounded-lg border border-emerald-700">
             Módulo de Asesores
           </span>
         </div>

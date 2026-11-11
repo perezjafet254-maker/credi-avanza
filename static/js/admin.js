@@ -1,9 +1,46 @@
 /**
- * CREDI AVANZA - Panel de Asesores Administrativo
+ * CREDI AVANZA - Panel de Asesores Administrativo Blindado
+ * Implementa autenticación basada en tokens criptográficos con headers Authorization: Bearer,
+ * control de acceso por roles (RBAC), sanitización contra XSS y auto-cierre por inactividad.
  */
 
-let ADMIN_TOKEN = localStorage.getItem("credi_admin_token") || "";
+// Utilizar sessionStorage para evitar persistencia indebida de sesión tras cerrar navegador
+let ADMIN_TOKEN = sessionStorage.getItem("credi_admin_token") || localStorage.getItem("credi_admin_token") || "";
+let CURRENT_USER_ROLE = sessionStorage.getItem("credi_admin_role") || "asesor";
 let solicitudesList = [];
+let inactivityTimer = null;
+
+// Escapar caracteres peligrosos para prevención rigurosa de XSS
+function escapeHTML(str) {
+  if (str === null || str === undefined) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// Headers de autenticación estándar RFC 6750 (evita filtración de tokens en query strings)
+function getAuthHeaders(contentType = "application/json") {
+  const headers = {};
+  if (contentType) headers["Content-Type"] = contentType;
+  if (ADMIN_TOKEN) headers["Authorization"] = `Bearer ${ADMIN_TOKEN}`;
+  return headers;
+}
+
+// Detector de inactividad: cierra la sesión tras 30 minutos sin interacción
+function reiniciarInactividad() {
+  if (inactivityTimer) clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(() => {
+    alert("Tu sesión ha expirado por inactividad por razones de seguridad.");
+    ejecutarLogout();
+  }, 30 * 60 * 1000); // 30 minutos
+}
+
+["mousemove", "keydown", "click", "scroll"].forEach(ev => {
+  window.addEventListener(ev, reiniciarInactividad, { passive: true });
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("admin-login-form");
@@ -26,6 +63,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if (tabBtnSolicitudes) tabBtnSolicitudes.className = "px-5 py-2.5 rounded-xl font-bold text-xs bg-emerald-700 text-white shadow-sm flex items-center gap-2 transition cursor-pointer";
       if (tabBtnConfig) tabBtnConfig.className = "px-5 py-2.5 rounded-xl font-bold text-xs bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition flex items-center gap-2 cursor-pointer shadow-sm";
     } else {
+      // Si el rol es asesor, no permitir acceso a configuración
+      if (CURRENT_USER_ROLE !== "admin") {
+        alert("Acceso restringido: Se requiere rol de Administrador para editar datos legales y de contacto.");
+        return;
+      }
       viewSolicitudes.classList.add("hidden");
       viewConfiguracion.classList.remove("hidden");
       if (tabBtnConfig) tabBtnConfig.className = "px-5 py-2.5 rounded-xl font-bold text-xs bg-emerald-700 text-white shadow-sm flex items-center gap-2 transition cursor-pointer";
@@ -53,11 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (btnLogout) {
-    btnLogout.addEventListener("click", () => {
-      localStorage.removeItem("credi_admin_token");
-      ADMIN_TOKEN = "";
-      mostrarLogin();
-    });
+    btnLogout.addEventListener("click", ejecutarLogout);
   }
 
   if (filterEstado) {
@@ -69,9 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (btnExportar) {
-    btnExportar.addEventListener("click", () => {
-      window.location.href = `/api/admin/solicitudes/export?token=${encodeURIComponent(ADMIN_TOKEN)}`;
-    });
+    btnExportar.addEventListener("click", exportarCSV);
   }
 
   if (configForm) {
@@ -82,16 +118,58 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+function aplicarControlesRBAC(rol) {
+  CURRENT_USER_ROLE = rol;
+  sessionStorage.setItem("credi_admin_role", rol);
+
+  const badge = document.getElementById("admin-user-role-badge");
+  const tabConfig = document.getElementById("tab-btn-config");
+  const btnExport = document.getElementById("btn-exportar-csv");
+
+  if (badge) {
+    if (rol === "admin") {
+      badge.textContent = "Rol: Administrador (Acceso Total)";
+      badge.className = "bg-emerald-950 text-emerald-300 text-xs font-bold px-3 py-1 rounded-lg border border-emerald-700 shadow-sm";
+    } else {
+      badge.textContent = "Rol: Asesor Comercial";
+      badge.className = "bg-blue-950 text-blue-200 text-xs font-semibold px-3 py-1 rounded-lg border border-blue-800 shadow-sm";
+    }
+  }
+
+  if (rol !== "admin") {
+    // Si es asesor, ocultar la pestaña de configuración del sitio y bloquear exportación masiva
+    if (tabConfig) tabConfig.classList.add("hidden");
+    if (btnExport) {
+      btnExport.classList.add("opacity-50", "cursor-not-allowed");
+      btnExport.title = "Exportación reservada para el rol Administrador";
+    }
+  } else {
+    if (tabConfig) tabConfig.classList.remove("hidden");
+    if (btnExport) {
+      btnExport.classList.remove("opacity-50", "cursor-not-allowed");
+      btnExport.title = "Descargar registro completo";
+    }
+  }
+}
+
 function mostrarLogin() {
   document.getElementById("admin-login-screen").classList.remove("hidden");
   document.getElementById("admin-dashboard-screen").classList.add("hidden");
+  const pinInput = document.getElementById("admin-pin-input");
+  if (pinInput) {
+    pinInput.value = "";
+    pinInput.focus();
+  }
 }
 
 function mostrarDashboard() {
   document.getElementById("admin-login-screen").classList.add("hidden");
   document.getElementById("admin-dashboard-screen").classList.remove("hidden");
+  reiniciarInactividad();
   cargarSolicitudes();
-  cargarConfiguracionAdmin();
+  if (CURRENT_USER_ROLE === "admin") {
+    cargarConfiguracionAdmin();
+  }
 }
 
 async function intentarLogin(pin) {
@@ -108,41 +186,74 @@ async function intentarLogin(pin) {
     if (res.ok) {
       const data = await res.json();
       ADMIN_TOKEN = data.token;
-      localStorage.setItem("credi_admin_token", ADMIN_TOKEN);
+      sessionStorage.setItem("credi_admin_token", ADMIN_TOKEN);
+      localStorage.removeItem("credi_admin_token"); // Eliminar de persistente inseguro
+      aplicarControlesRBAC(data.rol || "asesor");
       mostrarDashboard();
+    } else if (res.status === 429) {
+      const data = await res.json().catch(() => ({}));
+      errBox.textContent = data.detail || "Demasiados intentos fallidos. Por seguridad, el acceso ha sido bloqueado temporalmente durante 15 minutos.";
+      errBox.classList.remove("hidden");
     } else {
-      errBox.textContent = "Clave de acceso incorrecta. Por favor verifique sus credenciales.";
+      errBox.textContent = "Clave de acceso incorrecta. Verifique sus credenciales autorizadas.";
       errBox.classList.remove("hidden");
     }
   } catch (err) {
-    errBox.textContent = "Error de conexión con el servidor.";
+    errBox.textContent = "Error de conexión segura con el servidor.";
     errBox.classList.remove("hidden");
   }
 }
 
 async function verificarSesion() {
   try {
-    const res = await fetch(`/api/admin/verificar?token=${encodeURIComponent(ADMIN_TOKEN)}`);
+    const res = await fetch("/api/admin/verificar", {
+      headers: getAuthHeaders()
+    });
     if (res.ok) {
+      const data = await res.json();
+      aplicarControlesRBAC(data.rol || "asesor");
       mostrarDashboard();
     } else {
-      mostrarLogin();
+      ejecutarLogout();
     }
   } catch {
+    ejecutarLogout();
+  }
+}
+
+async function ejecutarLogout() {
+  try {
+    if (ADMIN_TOKEN) {
+      await fetch("/api/admin/logout", {
+        method: "POST",
+        headers: getAuthHeaders()
+      }).catch(() => {});
+    }
+  } finally {
+    sessionStorage.removeItem("credi_admin_token");
+    sessionStorage.removeItem("credi_admin_role");
+    localStorage.removeItem("credi_admin_token");
+    ADMIN_TOKEN = "";
+    CURRENT_USER_ROLE = "asesor";
+    if (inactivityTimer) clearTimeout(inactivityTimer);
     mostrarLogin();
   }
 }
 
 async function cargarSolicitudes() {
   try {
-    const res = await fetch(`/api/admin/solicitudes?token=${encodeURIComponent(ADMIN_TOKEN)}`);
+    const res = await fetch("/api/admin/solicitudes", {
+      headers: getAuthHeaders()
+    });
     if (res.ok) {
       solicitudesList = await res.json();
       actualizarMetricas(solicitudesList);
       renderTabla(solicitudesList);
+    } else if (res.status === 401) {
+      ejecutarLogout();
     }
   } catch (err) {
-    console.error("Error al cargar solicitudes:", err);
+    console.error("Error seguro al cargar solicitudes:", err);
   }
 }
 
@@ -204,32 +315,47 @@ function renderTabla(lista) {
     const tr = document.createElement("tr");
     tr.className = "hover:bg-slate-50 transition border-b border-slate-200 text-sm";
     
-    // Badge de estado
     let badgeClass = "bg-amber-100 text-amber-800";
     if (s.estado === "APROBADO") badgeClass = "bg-emerald-100 text-emerald-800";
     else if (s.estado === "RECHAZADO") badgeClass = "bg-red-100 text-red-800";
     else if (s.estado === "EN_EVALUACION") badgeClass = "bg-blue-100 text-blue-800";
     else if (s.estado === "CONTACTADO") badgeClass = "bg-purple-100 text-purple-800";
 
+    const codigoSafe = escapeHTML(s.codigo);
+    const nombresSafe = escapeHTML(s.nombres);
+    const apellidosSafe = escapeHTML(s.apellidos);
+    const tipoDocSafe = escapeHTML(s.tipo_documento);
+    const numDocSafe = escapeHTML(s.numero_documento);
+    const distritoSafe = escapeHTML(s.distrito);
+    const dptoSafe = escapeHTML(s.departamento);
+    const telSafe = escapeHTML(s.telefono);
+    const estadoSafe = escapeHTML(s.estado);
+    const montoFormatted = Number(s.monto || 0).toLocaleString("es-PE", { minimumFractionDigits: 2 });
+    const plazoFormatted = Number(s.plazo || 0);
+
     tr.innerHTML = `
-      <td class="py-3 px-4 font-mono font-semibold text-emerald-900">${s.codigo}</td>
+      <td class="py-3 px-4 font-mono font-semibold text-emerald-900">${codigoSafe}</td>
       <td class="py-3 px-4">
-        <div class="font-medium text-slate-900">${s.nombres} ${s.apellidos}</div>
-        <div class="text-xs text-slate-500">${s.tipo_documento}: ${s.numero_documento}</div>
+        <div class="font-medium text-slate-900">${nombresSafe} ${apellidosSafe}</div>
+        <div class="text-xs text-slate-500">${tipoDocSafe}: ${numDocSafe}</div>
       </td>
-      <td class="py-3 px-4 font-semibold text-slate-900">S/ ${s.monto.toLocaleString("es-PE", { minimumFractionDigits: 2 })}</td>
-      <td class="py-3 px-4 text-slate-600">${s.plazo} meses</td>
-      <td class="py-3 px-4">
-        <div class="text-slate-800">${s.distrito}, ${s.departamento}</div>
-        <div class="text-xs text-slate-500">Cel: ${s.telefono}</div>
+      <td class="py-3 px-4 font-semibold text-slate-900">S/ ${montoFormatted}</td>
+      <td class="py-3 px-4 text-slate-600">${plazoFormatted} meses</td>
+      <td class="py-3 px-4 text-xs text-slate-600">
+        <div>${distritoSafe}, ${dptoSafe}</div>
+        <div class="font-mono text-slate-500 font-semibold">${telSafe}</div>
       </td>
       <td class="py-3 px-4">
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${badgeClass}">
-          ${s.estado}
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${badgeClass}">
+          ${estadoSafe}
         </span>
       </td>
       <td class="py-3 px-4 text-right">
-        <button onclick="verDetalleSolicitud('${s.codigo}')" class="text-xs bg-emerald-700 hover:bg-emerald-800 text-white font-medium py-1.5 px-3 rounded-lg shadow-sm transition">
+        <button 
+          type="button"
+          onclick="verDetalleSolicitud('${codigoSafe}')"
+          class="btn-emerald-outline text-xs px-3 py-1.5"
+        >
           Ver Ficha
         </button>
       </td>
@@ -273,10 +399,10 @@ window.verDetalleSolicitud = function(codigo) {
     await actualizarEstadoSolicitud(item.codigo);
   };
 
-  // Botón enlace directo a WhatsApp para el asesor
+  // Botón enlace directo a WhatsApp para el asesor (sanitizado contra caracteres peligrosos)
   const btnWspAsesor = document.getElementById("btn-contactar-wsp");
   if (btnWspAsesor) {
-    const numClean = item.whatsapp.replace(/\D/g, "");
+    const numClean = (item.whatsapp || "").replace(/\D/g, "");
     const msg = encodeURIComponent(`Hola ${item.nombres}, te saludamos de Credi Avanza respecto a tu solicitud de préstamo personal ${item.codigo}. ¿Podemos coordinar para darte más detalles?`);
     btnWspAsesor.href = `https://wa.me/51${numClean}?text=${msg}`;
   }
@@ -289,9 +415,9 @@ async function actualizarEstadoSolicitud(codigo) {
   const nuevasNotas = document.getElementById("modal-sol-notas").value;
 
   try {
-    const res = await fetch(`/api/admin/solicitudes/${codigo}/estado?token=${encodeURIComponent(ADMIN_TOKEN)}`, {
+    const res = await fetch(`/api/admin/solicitudes/${encodeURIComponent(codigo)}/estado`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: getAuthHeaders(),
       body: JSON.stringify({
         estado: nuevoEstado,
         notas_asesor: nuevasNotas
@@ -299,18 +425,51 @@ async function actualizarEstadoSolicitud(codigo) {
     });
 
     if (res.ok) {
-      alert("Ficha actualizada correctamente.");
+      alert("Ficha actualizada correctamente y evento auditado.");
       document.getElementById("modal-detalle-solicitud").classList.add("hidden");
       await cargarSolicitudes();
     } else {
-      alert("No se pudo actualizar el estado.");
+      const err = await res.json().catch(() => ({}));
+      alert(`No se pudo actualizar el estado: ${err.mensaje || err.detail || "Error"}`);
     }
   } catch (err) {
     alert("Error de red al actualizar estado.");
   }
 }
 
+async function exportarCSV() {
+  if (CURRENT_USER_ROLE !== "admin") {
+    alert("Operación denegada: La exportación masiva está reservada para el rol Administrador.");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/admin/solicitudes/export", {
+      headers: getAuthHeaders()
+    });
+
+    if (res.ok) {
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `solicitudes_crediavanza_${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } else if (res.status === 403) {
+      alert("Acceso denegado: Tu rol actual no tiene autorización para exportar datos.");
+    } else {
+      alert("No fue posible exportar las solicitudes.");
+    }
+  } catch (err) {
+    alert("Error al descargar el archivo de solicitudes.");
+  }
+}
+
 async function cargarConfiguracionAdmin() {
+  if (CURRENT_USER_ROLE !== "admin") return;
   try {
     const res = await fetch("/api/config");
     if (res.ok) {
@@ -330,11 +489,16 @@ async function cargarConfiguracionAdmin() {
 }
 
 async function guardarConfiguracion() {
+  if (CURRENT_USER_ROLE !== "admin") {
+    alert("Acceso denegado: Se requiere rol de Administrador para modificar los datos de la empresa.");
+    return;
+  }
+
   const btnGuardar = document.getElementById("btn-guardar-cfg");
   const alertSuccess = document.getElementById("config-success-alert");
   if (btnGuardar) {
     btnGuardar.disabled = true;
-    btnGuardar.innerHTML = `<span>Guardando cambios...</span>`;
+    btnGuardar.innerHTML = `<span>Guardando de forma segura...</span>`;
   }
 
   const pinInput = document.getElementById("cfg-pin");
@@ -352,13 +516,18 @@ async function guardarConfiguracion() {
   };
 
   if (pinVal) {
+    if (pinVal.length < 6) {
+      alert("La nueva clave de acceso debe tener al menos 6 caracteres.");
+      if (btnGuardar) btnGuardar.disabled = false;
+      return;
+    }
     payload.admin_pin = pinVal;
   }
 
   try {
-    const res = await fetch(`/api/admin/configuracion?token=${encodeURIComponent(ADMIN_TOKEN)}`, {
+    const res = await fetch("/api/admin/configuracion", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: getAuthHeaders(),
       body: JSON.stringify(payload)
     });
 
@@ -373,7 +542,7 @@ async function guardarConfiguracion() {
       if (pinInput) pinInput.value = "";
     } else {
       const err = await res.json().catch(() => ({}));
-      alert(`Error al actualizar la configuración: ${err.detail || "Verifica tu sesión"}`);
+      alert(`Error al actualizar la configuración: ${err.mensaje || err.detail || "Verifica tu sesión"}`);
     }
   } catch (err) {
     alert("Error de conexión al comunicarse con el servidor.");
