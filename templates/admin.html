@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Asesores | Credi Avanza Perú</title>
+  <!-- Tailwind CSS Local (Sin bloqueos de red) -->
+  <script src="/static/js/tailwindcss.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="/static/images/logo.svg">
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen">
+
+  <!-- ================= PANTALLA DE LOGIN ASESORES ================= -->
+  <div id="admin-login-screen" class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-8 sm:p-10 max-w-md w-full shadow-fintech-lg border border-slate-200 text-center">
+      <img src="/static/images/logo.svg" alt="Credi Avanza" class="h-12 mx-auto mb-6">
+      <h2 class="text-xl font-extrabold text-slate-900">Panel de Asesores</h2>
+      <p class="text-xs text-slate-500 mt-1 mb-6">Acceso privado y seguro para la gestión de solicitudes</p>
+
+      <div id="login-error-msg" class="hidden p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl mb-4 text-left"></div>
+
+      <form id="admin-login-form" class="space-y-4">
+        <div>
+          <label for="admin-pin-input" class="block text-xs font-bold text-slate-700 uppercase mb-1 text-left">Clave de Acceso Asesor</label>
+          <input 
+            type="password" 
+            id="admin-pin-input" 
+            class="input-fintech text-center tracking-widest text-lg font-bold" 
+            placeholder="••••••••" 
+            required 
+            autocomplete="current-password"
+          >
+          <span class="text-[11px] text-slate-400 mt-1 block">Clave por defecto: <code class="font-mono text-emerald-800 bg-emerald-50 px-1 py-0.5 rounded">crediavanza2026</code></span>
+        </div>
+
+        <button type="submit" class="btn-emerald w-full py-3.5 text-sm">
+          INGRESAR AL PANEL
+        </button>
+      </form>
+
+      <div class="mt-6 pt-4 border-t border-slate-100 text-xs text-slate-400">
+        <a href="/" class="hover:text-emerald-700">← Volver al sitio web principal</a>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= DASHBOARD ADMINISTRATIVO ================= -->
+  <div id="admin-dashboard-screen" class="hidden min-h-screen flex flex-col">
+    
+    <!-- Header Admin -->
+    <header class="bg-emerald-900 text-white shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <a href="/">
+            <img src="/static/images/logo.svg" alt="Credi Avanza" class="h-9 w-auto brightness-200 contrast-200">
+          </a>
+          <span class="bg-emerald-800 text-emerald-200 text-xs font-semibold px-2.5 py-1 rounded-lg border border-emerald-700">
+            Módulo de Asesores
+          </span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <a href="/" target="_blank" class="text-xs text-emerald-200 hover:text-white flex items-center gap-1">
+            <span>Ver Web</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+          </a>
+          <button id="btn-logout" class="text-xs bg-emerald-950/60 hover:bg-emerald-950 text-emerald-200 px-3 py-1.5 rounded-lg border border-emerald-800 transition">
+            Cerrar Sesión
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full space-y-6">
+      
+      <!-- Métricas KPI -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <span class="text-xs font-bold text-slate-500 uppercase">Total Solicitudes</span>
+          <div id="stat-total" class="text-2xl font-black text-slate-900 mt-1">0</div>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <span class="text-xs font-bold text-amber-600 uppercase">Pendientes</span>
+          <div id="stat-pendientes" class="text-2xl font-black text-amber-600 mt-1">0</div>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <span class="text-xs font-bold text-blue-600 uppercase">En Evaluación</span>
+          <div id="stat-evaluacion" class="text-2xl font-black text-blue-600 mt-1">0</div>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <span class="text-xs font-bold text-emerald-600 uppercase">Aprobadas</span>
+          <div id="stat-aprobados" class="text-2xl font-black text-emerald-700 mt-1">0</div>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm col-span-2 sm:col-span-1">
+          <span class="text-xs font-bold text-slate-500 uppercase">Monto Total</span>
+          <div id="stat-monto-total" class="text-xl font-black text-slate-900 mt-1">S/ 0.00</div>
+        </div>
+
+      </div>
+
+      <!-- Barra de Filtros, Búsqueda y Exportación -->
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4">
+        
+        <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+          <!-- Búsqueda rápida -->
+          <div class="relative w-full sm:w-72">
+            <input 
+              type="text" 
+              id="search-input" 
+              placeholder="Buscar por DNI, Nombre, Código..." 
+              class="input-fintech text-xs pl-9"
+            >
+            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </div>
+
+          <!-- Filtro de Estado -->
+          <select id="filter-estado" class="input-fintech text-xs w-full sm:w-48">
+            <option value="">Todos los Estados</option>
+            <option value="PENDIENTE">PENDIENTE</option>
+            <option value="EN_EVALUACION">EN EVALUACIÓN</option>
+            <option value="APROBADO">APROBADO</option>
+            <option value="CONTACTADO">CONTACTADO</option>
+            <option value="RECHAZADO">RECHAZADO</option>
+          </select>
+        </div>
+
+        <!-- Botón Exportar CSV seguro -->
+        <div class="w-full sm:w-auto flex justify-end">
+          <button id="btn-exportar-csv" class="btn-emerald text-xs px-4 py-2.5 flex items-center gap-2 w-full sm:w-auto justify-center">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            Exportar Solicitudes (Excel / CSV)
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Tabla de Solicitudes -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                <th class="py-3 px-4">Código</th>
+                <th class="py-3 px-4">Solicitante</th>
+                <th class="py-3 px-4">Monto Solicitado</th>
+                <th class="py-3 px-4">Plazo</th>
+                <th class="py-3 px-4">Ubicación / Contacto</th>
+                <th class="py-3 px-4">Estado</th>
+                <th class="py-3 px-4 text-right">Acción</th>
+              </tr>
+            </thead>
+            <tbody id="solicitudes-tbody" class="divide-y divide-slate-100">
+              <!-- Renderizado dinámicamente con JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Sección de Configuración de la Empresa / Plataforma -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
+        <div class="border-b border-slate-200 pb-4 mb-6">
+          <h3 class="text-base font-bold text-slate-900">Configuración de Parámetros y Contacto de Credi Avanza</h3>
+          <p class="text-xs text-slate-500 mt-0.5">Modifica los datos que se muestran en el portal público sin modificar código fuente.</p>
+        </div>
+
+        <form id="admin-config-form" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">TEA Referencial Estimada (%)</label>
+              <input type="number" step="0.01" id="cfg-tea" class="input-fintech text-xs" required>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Teléfono de Atención</label>
+              <input type="text" id="cfg-tel" class="input-fintech text-xs" required>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">WhatsApp de Atención</label>
+              <input type="text" id="cfg-wsp" class="input-fintech text-xs" required>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Correo Electrónico Oficial</label>
+              <input type="email" id="cfg-email" class="input-fintech text-xs" required>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Horario de Atención</label>
+              <input type="text" id="cfg-horario" class="input-fintech text-xs" required>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Razón Social</label>
+              <input type="text" id="cfg-razon" class="input-fintech text-xs" required>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Número de RUC</label>
+              <input type="text" id="cfg-ruc" class="input-fintech text-xs font-mono" required>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Dirección Fiscal</label>
+              <input type="text" id="cfg-dir" class="input-fintech text-xs" required>
+            </div>
+          </div>
+
+          <div class="pt-3 flex justify-end">
+            <button type="submit" class="btn-emerald text-xs px-6 py-2.5">
+              Guardar Cambios de Configuración
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </main>
+
+  </div>
+
+
+  <!-- ================= MODAL FICHA DETALLADA DE SOLICITUD ================= -->
+  <div id="modal-detalle-solicitud" class="fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl border border-slate-200">
+      
+      <!-- Encabezado Modal -->
+      <div class="p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+        <div>
+          <span class="text-xs font-bold text-slate-400 uppercase">Expediente de Solicitud</span>
+          <div class="flex items-center gap-3 mt-0.5">
+            <h3 id="modal-sol-codigo" class="text-xl font-mono font-black text-emerald-900">CA-2026-XXXXXX</h3>
+            <span id="modal-sol-fecha" class="text-xs text-slate-500">2026-11-10</span>
+          </div>
+        </div>
+        <button type="button" onclick="document.getElementById('modal-detalle-solicitud').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 p-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Cuerpo del expediente -->
+      <div class="p-6 overflow-y-auto space-y-6 text-xs sm:text-sm">
+        
+        <!-- Bloque 1: Resumen del Préstamo -->
+        <div class="bg-emerald-50/70 p-4 rounded-2xl border border-emerald-200">
+          <h4 class="font-bold text-emerald-900 uppercase text-xs mb-3">Datos del Financiamiento Solicitado</h4>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div>
+              <span class="text-slate-500 block text-xs">Monto:</span>
+              <strong id="modal-sol-monto" class="text-emerald-900 text-base">S/ 0.00</strong>
+            </div>
+            <div>
+              <span class="text-slate-500 block text-xs">Plazo:</span>
+              <strong id="modal-sol-plazo" class="text-slate-900 text-base">0 meses</strong>
+            </div>
+            <div>
+              <span class="text-slate-500 block text-xs">Cuota Est.:</span>
+              <strong id="modal-sol-cuota" class="text-slate-900 text-base">S/ 0.00</strong>
+            </div>
+            <div>
+              <span class="text-slate-500 block text-xs">Finalidad:</span>
+              <strong id="modal-sol-finalidad" class="text-slate-900">Consolidación</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloque 2: Solicitante y Contacto -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
+            <h4 class="font-bold text-slate-900 uppercase text-xs border-b border-slate-200 pb-1.5">Identificación</h4>
+            <div>
+              <span class="text-slate-500 text-xs">Titular:</span>
+              <div id="modal-sol-titular" class="font-bold text-slate-900">Carlos Mendoza</div>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs">Documento:</span>
+              <div id="modal-sol-documento" class="font-medium text-slate-800">DNI: 00000000</div>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs">Fecha Nacimiento:</span>
+              <div id="modal-sol-nacimiento" class="text-slate-700">1990-01-01</div>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
+            <h4 class="font-bold text-slate-900 uppercase text-xs border-b border-slate-200 pb-1.5">Contacto</h4>
+            <div>
+              <span class="text-slate-500 text-xs">Teléfono:</span>
+              <div id="modal-sol-telefono" class="font-medium text-slate-900">987654321</div>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs">WhatsApp:</span>
+              <div id="modal-sol-whatsapp" class="font-medium text-slate-900">987654321</div>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs">Email:</span>
+              <div id="modal-sol-email" class="text-slate-700">carlos@correo.com</div>
+            </div>
+            <div class="pt-1">
+              <a id="btn-contactar-wsp" href="#" target="_blank" class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm">
+                💬 Abrir Chat de WhatsApp
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Bloque 3: Residencia y Situación Laboral -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
+            <h4 class="font-bold text-slate-900 uppercase text-xs border-b border-slate-200 pb-1.5">Ubicación</h4>
+            <div>
+              <span class="text-slate-500 text-xs">Distrito / Prov. / Dpto:</span>
+              <div id="modal-sol-ubicacion" class="font-medium text-slate-800">-</div>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs">Dirección:</span>
+              <div id="modal-sol-direccion" class="text-slate-700">-</div>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
+            <h4 class="font-bold text-slate-900 uppercase text-xs border-b border-slate-200 pb-1.5">Laboral e Ingresos</h4>
+            <div>
+              <span class="text-slate-500 text-xs">Situación Laboral:</span>
+              <div id="modal-sol-laboral" class="font-medium text-slate-800">-</div>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs">Ingresos Mensuales:</span>
+              <div id="modal-sol-ingresos" class="font-bold text-emerald-800 text-base">S/ 0.00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloque 4: Gestión del Asesor -->
+        <div class="bg-amber-50/60 p-4 rounded-2xl border border-amber-200 space-y-3">
+          <h4 class="font-bold text-amber-900 uppercase text-xs">Gestión y Dictamen del Asesor</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Estado de la Solicitud</label>
+              <select id="modal-sol-estado-select" class="input-fintech text-xs font-bold">
+                <option value="PENDIENTE">PENDIENTE</option>
+                <option value="EN_EVALUACION">EN EVALUACIÓN</option>
+                <option value="APROBADO">APROBADO</option>
+                <option value="CONTACTADO">CONTACTADO</option>
+                <option value="OBSERVADO">OBSERVADO</option>
+                <option value="RECHAZADO">RECHAZADO</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Notas Internas del Asesor</label>
+              <textarea id="modal-sol-notas" class="input-fintech text-xs h-20" placeholder="Ej. Cliente contactado. Se solicitaron boletas de pago de los últimos 3 meses..."></textarea>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Pie del Modal -->
+      <div class="p-4 border-t border-slate-200 bg-slate-50 flex justify-between items-center">
+        <button type="button" onclick="document.getElementById('modal-detalle-solicitud').classList.add('hidden')" class="btn-emerald-outline text-xs px-4 py-2">
+          Cerrar
+        </button>
+        <button type="button" id="btn-guardar-estado-solicitud" class="btn-emerald text-xs px-6 py-2.5">
+          Guardar Cambios de la Solicitud
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/static/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+/* ========================================================
+   CREDI AVANZA - ESTILOS PERSONALIZADOS FINTECH PERÚ
+   Identidad: Verde Esmeralda, Verde Oscuro y Blanco
+   ======================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
+:root {
+  --color-emerald-deep: #022c22;
+  --color-emerald-dark: #064e3b;
+  --color-emerald-primary: #059669;
+  --color-emerald-accent: #10b981;
+  --color-emerald-light: #ecfdf5;
+  --color-emerald-border: #a7f3d0;
+  --font-heading: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
+  color: #0f172a;
+  background-color: #f8fafc;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: var(--font-heading);
+}
+
+/* Sombras suaves y elegantes estilo Fintech */
+.shadow-fintech-sm {
+  box-shadow: 0 1px 3px rgba(6, 78, 59, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.shadow-fintech-md {
+  box-shadow: 0 4px 16px -2px rgba(6, 78, 59, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+}
+
+.shadow-fintech-lg {
+  box-shadow: 0 12px 30px -4px rgba(6, 78, 59, 0.12), 0 4px 10px -2px rgba(0, 0, 0, 0.05);
+}
+
+.shadow-fintech-highlight {
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15), 0 10px 25px -3px rgba(5, 150, 105, 0.15);
+}
+
+/* Botón principal verde con bordes ligeramente redondeados */
+.btn-emerald {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  border-radius: 0.75rem; /* rounded-xl */
+  padding: 0.875rem 1.75rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.28);
+}
+
+.btn-emerald:hover {
+  background: linear-gradient(135deg, #047857 0%, #064e3b 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.38);
+}
+
+.btn-emerald:active {
+  transform: translateY(0);
+}
+
+.btn-emerald-outline {
+  background: #ffffff;
+  color: #064e3b;
+  border: 1.5px solid #059669;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.btn-emerald-outline:hover {
+  background: #ecfdf5;
+  border-color: #047857;
+  color: #047857;
+}
+
+/* Tarjetas de montos seleccionables */
+.amount-card {
+  cursor: pointer;
+  border-radius: 0.75rem;
+  border: 2px solid #e2e8f0;
+  background-color: #ffffff;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.amount-card:hover {
+  border-color: #10b981;
+  background-color: #f0fdf4;
+  transform: translateY(-2px);
+}
+
+.amount-card.active {
+  border-color: #059669;
+  background: linear-gradient(145deg, #ecfdf5 0%, #ffffff 100%);
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.18), 0 0 0 2px #059669;
+}
+
+/* Tarjetas de plazos */
+.term-pill {
+  cursor: pointer;
+  border-radius: 0.625rem;
+  border: 1.5px solid #cbd5e1;
+  background-color: #ffffff;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.term-pill:hover {
+  border-color: #059669;
+  color: #064e3b;
+  background-color: #f0fdf4;
+}
+
+.term-pill.active {
+  border-color: #059669;
+  background-color: #059669;
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(5, 150, 105, 0.3);
+}
+
+/* Input range slider personalizado */
+.emerald-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: #e2e8f0;
+  outline: none;
+  transition: background 0.2s;
+}
+
+.emerald-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #059669;
+  cursor: pointer;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.4);
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.emerald-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  background: #047857;
+}
+
+.emerald-slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #059669;
+  cursor: pointer;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.4);
+}
+
+/* Wizard / Barra de progreso */
+.step-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.step-indicator {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-family: var(--font-heading);
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.step-item.active .step-indicator {
+  background-color: #059669;
+  color: #ffffff;
+  box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.2);
+}
+
+.step-item.completed .step-indicator {
+  background-color: #047857;
+  color: #ffffff;
+}
+
+.step-item.pending .step-indicator {
+  background-color: #e2e8f0;
+  color: #64748b;
+}
+
+.step-line {
+  position: absolute;
+  top: 21px;
+  left: 50%;
+  width: 100%;
+  height: 3px;
+  background-color: #e2e8f0;
+  z-index: 1;
+  transition: background-color 0.3s ease;
+}
+
+.step-item.completed .step-line {
+  background-color: #059669;
+}
+
+/* Animación de checkmark de éxito */
+@keyframes circle-draw {
+  from { stroke-dashoffset: 280; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes check-draw {
+  from { stroke-dashoffset: 50; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.7); opacity: 0; }
+  70% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+.animate-success-pop {
+  animation: popIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.checkmark-circle {
+  stroke-dasharray: 280;
+  stroke-dashoffset: 280;
+  animation: circle-draw 0.7s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark-check {
+  stroke-dasharray: 50;
+  stroke-dashoffset: 50;
+  animation: check-draw 0.5s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
+}
+
+/* Estados de formulario y validación */
+.input-fintech {
+  width: 100%;
+  border-radius: 0.625rem;
+  border: 1.5px solid #cbd5e1;
+  padding: 0.75rem 1rem;
+  background-color: #ffffff;
+  color: #0f172a;
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-fintech:focus {
+  outline: none;
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+}
+
+.input-fintech.is-invalid {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.input-fintech.is-invalid:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.error-text {
+  font-size: 0.785rem;
+  color: #dc2626;
+  margin-top: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Modales */
+.modal-overlay {
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+/* Gradientes de marca */
+.bg-gradient-emerald-hero {
+  background: radial-gradient(circle at top right, #ecfdf5 0%, #ffffff 50%, #f0fdf4 100%);
+}
+
+.bg-emerald-footer {
+  background-color: #022c22;
+  color: #e2e8f0;
+}

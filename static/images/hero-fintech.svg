@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500" fill="none">
+  <defs>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#F8FAFC" />
+    </linearGradient>
+    <linearGradient id="accentGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A7F3D0" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#6EE7B7" stop-opacity="0.1" />
+    </linearGradient>
+    <filter id="shadowSoft" x="-10%" y="-10%" width="130%" height="130%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#064E3B" flood-opacity="0.12" />
+    </filter>
+    <filter id="shadowCard" x="-20%" y="-20%" width="140%" height="140%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0F172A" flood-opacity="0.08" />
+    </filter>
+  </defs>
+
+  <!-- Fondo dinámico con ondas orgánicas fintech -->
+  <circle cx="340" cy="250" r="210" fill="url(#accentGlow)" />
+  <circle cx="480" cy="110" r="70" fill="#ECFDF5" />
+  <circle cx="120" cy="380" r="90" fill="#F0FDF4" />
+
+  <!-- Líneas de cuadrícula sutiles -->
+  <path d="M 100 250 H 500" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4 4"/>
+  <path d="M 100 320 H 500" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4 4"/>
+  <path d="M 100 180 H 500" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4 4"/>
+
+  <!-- Teléfono inteligente central -->
+  <g transform="translate(180, 50)" filter="url(#shadowSoft)">
+    <!-- Cuerpo del teléfono -->
+    <rect x="0" y="0" width="240" height="410" rx="36" fill="#0F172A" />
+    <rect x="6" y="6" width="228" height="398" rx="30" fill="#FFFFFF" />
+    
+    <!-- Notch / Bocina -->
+    <rect x="80" y="14" width="80" height="14" rx="7" fill="#0F172A" />
+
+    <!-- Barra de estado -->
+    <circle cx="32" cy="21" r="3" fill="#10B981" />
+    <circle cx="42" cy="21" r="3" fill="#10B981" />
+    <rect x="180" y="18" width="18" height="8" rx="2" fill="#94A3B8" />
+
+    <!-- Pantalla de la App Credi Avanza -->
+    <rect x="16" y="44" width="208" height="70" rx="16" fill="url(#emeraldGrad)" />
+    <text x="30" y="68" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#D1FAE5">MONTO DISPONIBLE</text>
+    <text x="30" y="96" font-family="'Plus Jakarta Sans', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF">S/ 15,000</text>
+    <circle cx="195" cy="74" r="14" fill="#047857" />
+    <path d="M190 74L194 78L201 70" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Tarjeta de cuota mensual simulada -->
+    <rect x="16" y="126" width="208" height="84" rx="14" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="28" y="148" font-family="'Inter', sans-serif" font-size="10" font-weight="600" fill="#64748B">PLAZO SELECCIONADO</text>
+    <text x="28" y="168" font-family="'Inter', sans-serif" font-size="14" font-weight="700" fill="#0F172A">24 Meses</text>
+    <text x="140" y="148" font-family="'Inter', sans-serif" font-size="10" font-weight="600" fill="#059669">CUOTA ESTIMADA</text>
+    <text x="140" y="168" font-family="'Plus Jakarta Sans', sans-serif" font-size="14" font-weight="800" fill="#064E3B">S/ 825*</text>
+    <line x1="28" y1="184" x2="196" y2="184" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="28" y="198" font-family="'Inter', sans-serif" font-size="8.5" font-weight="500" fill="#94A3B8">Evaluación 100% digital y transparente</text>
+
+    <!-- Barra de progreso simulador -->
+    <rect x="16" y="222" width="208" height="60" rx="12" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1"/>
+    <text x="28" y="242" font-family="'Inter', sans-serif" font-size="11" font-weight="700" fill="#064E3B">Estado: Pre-evaluación</text>
+    <rect x="28" y="254" width="180" height="8" rx="4" fill="#D1FAE5"/>
+    <rect x="28" y="254" width="135" height="8" rx="4" fill="#059669"/>
+
+    <!-- Botón en pantalla -->
+    <rect x="16" y="296" width="208" height="42" rx="12" fill="#059669" />
+    <text x="65" y="322" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">SOLICITAR AHORA</text>
+    
+    <!-- Barra inferior botón home -->
+    <rect x="85" y="390" width="70" height="4" rx="2" fill="#CBD5E1" />
+  </g>
+
+  <!-- Tarjeta flotante izquierda: Seguridad & Ley 29733 -->
+  <g transform="translate(45, 140)" filter="url(#shadowCard)">
+    <rect x="0" y="0" width="165" height="76" rx="16" fill="url(#cardGrad)" stroke="#E2E8F0" stroke-width="1" />
+    <circle cx="28" cy="38" r="18" fill="#D1FAE5" />
+    <path d="M28 28L35 32V39C35 44 28 47 28 47C28 47 21 44 21 39V32L28 28Z" fill="#059669" />
+    <path d="M25 38L27 40L31 35" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="56" y="32" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="800" fill="#064E3B">Datos Seguros</text>
+    <text x="56" y="48" font-family="'Inter', sans-serif" font-size="9" font-weight="600" fill="#64748B">Ley N.º 29733</text>
+    <text x="56" y="60" font-family="'Inter', sans-serif" font-size="8.5" font-weight="500" fill="#059669">Protección Total</text>
+  </g>
+
+  <!-- Tarjeta flotante derecha: Desembolso ágil -->
+  <g transform="translate(390, 260)" filter="url(#shadowCard)">
+    <rect x="0" y="0" width="175" height="82" rx="16" fill="url(#cardGrad)" stroke="#E2E8F0" stroke-width="1" />
+    <circle cx="30" cy="41" r="18" fill="#ECFDF5" />
+    <path d="M30 30V41L36 44" stroke="#059669" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="30" cy="41" r="8" stroke="#059669" stroke-width="2"/>
+    <text x="58" y="33" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="800" fill="#0F172A">Respuesta Rápida</text>
+    <text x="58" y="49" font-family="'Inter', sans-serif" font-size="9.5" font-weight="600" fill="#059669">En 24 a 48 horas</text>
+    <text x="58" y="63" font-family="'Inter', sans-serif" font-size="8" font-weight="500" fill="#64748B">Contacto de asesores</text>
+  </g>
+
+  <!-- Tarjeta flotante inferior: Sin adelantos -->
+  <g transform="translate(60, 310)" filter="url(#shadowCard)">
+    <rect x="0" y="0" width="150" height="66" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <circle cx="26" cy="33" r="14" fill="#FEF3C7" />
+    <text x="21" y="38" font-family="'Inter', sans-serif" font-size="13" font-weight="800" fill="#D97706">S/</text>
+    <text x="48" y="28" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="700" fill="#0F172A">Sin Pagos Previos</text>
+    <text x="48" y="44" font-family="'Inter', sans-serif" font-size="8.5" font-weight="500" fill="#475569">0% comisiones ocultas</text>
+  </g>
+
+  <!-- Gráfico de tendencia ascendente -->
+  <path d="M 120 440 C 200 420, 280 390, 480 340" stroke="#059669" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <circle cx="480" cy="340" r="6" fill="#047857" stroke="#A7F3D0" stroke-width="3"/>
+</svg>
