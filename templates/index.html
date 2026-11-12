@@ -15,6 +15,13 @@
   <!-- Tailwind CSS Local (Carga inmediata sin bloqueos de red o CSP) -->
   <script src="/static/js/tailwindcss.min.js"></script>
   <script>
+    if (typeof tailwind === 'undefined') {
+      var s = document.createElement('script');
+      s.src = 'https://cdn.tailwindcss.com';
+      document.head.appendChild(s);
+    }
+  </script>
+  <script>
     tailwind.config = {
       theme: {
         extend: {
@@ -1337,11 +1344,11 @@
 
   <!-- Botón Flotante de WhatsApp para Atención Inmediata -->
   <a id="btn-wsp-flotante" href="https://wa.me/51987654321?text=Hola%2C%20quisiera%20m%C3%A1s%20informaci%C3%B3n%20sobre%20un%20pr%C3%A9stamo%20en%20Credi%20Avanza" target="_blank" rel="noopener noreferrer" class="cfg-whatsapp-link fixed bottom-6 right-6 z-40 bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 rounded-full shadow-2xl flex items-center gap-2 group transition-all duration-300 hover:scale-105 border-2 border-white/90" title="Atención directa por WhatsApp">
-    <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24">
+    <svg class="w-7 h-7 fill-current shrink-0" width="28" height="28" viewBox="0 0 24 24">
       <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.529 1.777.781 2.791.781 3.181 0 5.767-2.587 5.767-5.766.001-3.18-2.585-5.767-5.767-5.767zm0 10.457c-.886 0-1.611-.237-2.383-.695l-.171-.102-1.767.463.471-1.722-.112-.178c-.495-.788-.756-1.55-.755-2.457.001-2.476 2.015-4.49 4.492-4.49 2.476 0 4.49 2.014 4.49 4.49 0 2.476-2.014 4.489-4.49 4.489z"/>
       <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.176L2 22l4.981-1.306C8.423 21.524 10.154 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18.25c-1.64 0-3.18-.46-4.502-1.258l-.323-.194-2.964.777.791-2.89-.211-.336C3.93 15.01 3.45 13.54 3.45 12c0-4.714 3.836-8.55 8.55-8.55 4.714 0 8.55 3.836 8.55 8.55 0 4.714-3.836 8.55-8.55 8.55z"/>
     </svg>
-    <span class="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-500 ease-in-out font-bold text-xs pr-1">
+    <span class="hidden md:inline-block max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-500 ease-in-out font-bold text-xs pr-1">
       ¿Consultas? Chatea con un asesor
     </span>
   </a>

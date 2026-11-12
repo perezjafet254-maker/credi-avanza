@@ -517,7 +517,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["X-XSS-Protection"] = "1; mode=block"
         response.headers["Content-Security-Policy"] = (
             "default-src 'self'; "
-            "script-src 'self' 'unsafe-inline' https://www.gstatic.com https://fonts.googleapis.com; "
+            "script-src 'self' 'unsafe-inline' https://www.gstatic.com https://fonts.googleapis.com https://cdn.tailwindcss.com; "
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
             "font-src 'self' https://fonts.gstatic.com; "
             "img-src 'self' data: https:; "
@@ -669,6 +669,18 @@ def get_admin_js():
             pass
     return Response(content=ADMIN_JS_BYTES, media_type="application/javascript")
 
+@app.get("/static/js/tailwindcss.min.js")
+def get_tailwindcss():
+    p = os.path.join(os.path.dirname(__file__), "static", "js", "tailwindcss.min.js")
+    if os.path.exists(p):
+        try:
+            with open(p, "r", encoding="utf-8", errors="ignore") as f:
+                return Response(content=f.read(), media_type="application/javascript")
+        except Exception:
+            pass
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse(url="https://cdn.tailwindcss.com")
+
 @app.get("/static/js/ubigeo.js")
 def get_ubigeo_js():
     p = os.path.join(os.path.dirname(__file__), "static", "js", "ubigeo.js")
@@ -701,6 +713,12 @@ def get_hero():
         except Exception:
             pass
     return Response(content=HERO_SVG_BYTES, media_type="image/svg+xml")
+
+
+from fastapi.staticfiles import StaticFiles
+static_dir_path = os.path.join(os.path.dirname(__file__), "static")
+if os.path.exists(static_dir_path):
+    app.mount("/static", StaticFiles(directory=static_dir_path), name="static")
 
 # ----------------- ENDPOINTS PÚBLICOS API -----------------
 

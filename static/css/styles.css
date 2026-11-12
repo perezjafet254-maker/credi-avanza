@@ -311,3 +311,16 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   background-color: #022c22;
   color: #e2e8f0;
 }
+
+
+/* Reglas de contingencia y estabilidad visual responsive móvil */
+svg {
+  max-width: 100%;
+}
+svg.w-4 { width: 1rem !important; height: 1rem !important; }
+svg.w-5 { width: 1.25rem !important; height: 1.25rem !important; }
+svg.w-6 { width: 1.5rem !important; height: 1.5rem !important; }
+svg.w-7 { width: 1.75rem !important; height: 1.75rem !important; }
+svg.w-10 { width: 2.5rem !important; height: 2.5rem !important; }
+svg.w-12 { width: 3rem !important; height: 3rem !important; }
+svg.w-16 { width: 4rem !important; height: 4rem !important; }
