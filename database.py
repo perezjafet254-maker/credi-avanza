@@ -115,7 +115,7 @@ def init_db():
         ("tea_referencial", "28.50", "Tasa Efectiva Anual (TEA) referencial estimada en porcentaje (%)"),
         ("tasa_seguro_desgravamen", "0.075", "Tasa mensual referencial de seguro de desgravamen (%)"),
         ("razon_social", "Credi Avanza Servicios Financieros S.A.C.", "Razón Social de la empresa en Perú"),
-        ("ruc", "20608945123", "Número de RUC de la empresa"),
+        ("ruc", "20609205572", "Número de RUC de la empresa"),
         ("direccion_fiscal", "Av. Víctor Andrés Belaúnde 147, San Isidro, Lima - Perú", "Domicilio fiscal de la empresa"),
         ("telefono_atencion", "+51 1 700 8920", "Teléfono de atención al cliente"),
         ("whatsapp_atencion", "+51 987 654 321", "WhatsApp de atención oficial"),
