@@ -616,34 +616,90 @@ def get_robots():
 
 @app.get("/", response_class=HTMLResponse)
 def read_root():
+    template_path = os.path.join(os.path.dirname(__file__), "templates", "index.html")
+    if os.path.exists(template_path):
+        try:
+            with open(template_path, "r", encoding="utf-8") as f:
+                return HTMLResponse(content=f.read())
+        except Exception:
+            pass
     return HTMLResponse(content=INDEX_HTML_BYTES.decode("utf-8"))
 
 @app.get("/admin", response_class=HTMLResponse)
 def read_admin():
+    template_path = os.path.join(os.path.dirname(__file__), "templates", "admin.html")
+    if os.path.exists(template_path):
+        try:
+            with open(template_path, "r", encoding="utf-8") as f:
+                return HTMLResponse(content=f.read())
+        except Exception:
+            pass
     return HTMLResponse(content=ADMIN_HTML_BYTES.decode("utf-8"))
 
 @app.get("/static/css/styles.css")
 def get_css():
+    p = os.path.join(os.path.dirname(__file__), "static", "css", "styles.css")
+    if os.path.exists(p):
+        try:
+            with open(p, "r", encoding="utf-8") as f:
+                return Response(content=f.read(), media_type="text/css")
+        except Exception:
+            pass
     return Response(content=STYLES_CSS_BYTES, media_type="text/css")
 
 @app.get("/static/js/app.js")
 def get_app_js():
+    p = os.path.join(os.path.dirname(__file__), "static", "js", "app.js")
+    if os.path.exists(p):
+        try:
+            with open(p, "r", encoding="utf-8") as f:
+                return Response(content=f.read(), media_type="application/javascript")
+        except Exception:
+            pass
     return Response(content=APP_JS_BYTES, media_type="application/javascript")
 
 @app.get("/static/js/admin.js")
 def get_admin_js():
+    p = os.path.join(os.path.dirname(__file__), "static", "js", "admin.js")
+    if os.path.exists(p):
+        try:
+            with open(p, "r", encoding="utf-8") as f:
+                return Response(content=f.read(), media_type="application/javascript")
+        except Exception:
+            pass
     return Response(content=ADMIN_JS_BYTES, media_type="application/javascript")
 
 @app.get("/static/js/ubigeo.js")
 def get_ubigeo_js():
+    p = os.path.join(os.path.dirname(__file__), "static", "js", "ubigeo.js")
+    if os.path.exists(p):
+        try:
+            with open(p, "r", encoding="utf-8") as f:
+                return Response(content=f.read(), media_type="application/javascript")
+        except Exception:
+            pass
     return Response(content=UBIGEO_JS_BYTES, media_type="application/javascript")
 
 @app.get("/static/images/logo.svg")
 def get_logo():
+    p = os.path.join(os.path.dirname(__file__), "static", "images", "logo.svg")
+    if os.path.exists(p):
+        try:
+            with open(p, "rb") as f:
+                return Response(content=f.read(), media_type="image/svg+xml")
+        except Exception:
+            pass
     return Response(content=LOGO_SVG_BYTES, media_type="image/svg+xml")
 
 @app.get("/static/images/hero-fintech.svg")
 def get_hero():
+    p = os.path.join(os.path.dirname(__file__), "static", "images", "hero-fintech.svg")
+    if os.path.exists(p):
+        try:
+            with open(p, "rb") as f:
+                return Response(content=f.read(), media_type="image/svg+xml")
+        except Exception:
+            pass
     return Response(content=HERO_SVG_BYTES, media_type="image/svg+xml")
 
 # ----------------- ENDPOINTS PÚBLICOS API -----------------
