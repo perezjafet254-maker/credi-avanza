@@ -703,6 +703,18 @@ def get_logo():
             pass
     return Response(content=LOGO_SVG_BYTES, media_type="image/svg+xml")
 
+@app.get("/static/images/og-image.jpg")
+@app.get("/og-image.jpg")
+def get_og_image():
+    p = os.path.join(os.path.dirname(__file__), "static", "images", "og-image.jpg")
+    if os.path.exists(p):
+        try:
+            with open(p, "rb") as f:
+                return Response(content=f.read(), media_type="image/jpeg", headers={"Cache-Control": "public, max-age=604800"})
+        except Exception:
+            pass
+    return Response(status_code=404)
+
 @app.get("/static/images/hero-fintech.svg")
 def get_hero():
     p = os.path.join(os.path.dirname(__file__), "static", "images", "hero-fintech.svg")
