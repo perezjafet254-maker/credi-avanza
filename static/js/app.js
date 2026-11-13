@@ -70,7 +70,7 @@ function actualizarTextosContacto(data) {
   wspElements.forEach(el => el.textContent = data.whatsapp_atencion || "+51 987 654 321");
 
   const emailElements = document.querySelectorAll(".cfg-email");
-  emailElements.forEach(el => el.textContent = data.email_contacto || "contacto@crediavanza.pe");
+  emailElements.forEach(el => el.textContent = data.email_contacto || "crediavanzape@gmail.com");
 
   const horarioElements = document.querySelectorAll(".cfg-horario");
   horarioElements.forEach(el => el.textContent = data.horario_atencion || "Lunes a Viernes 8:30 a.m. - 6:30 p.m.");
@@ -100,7 +100,7 @@ function actualizarTextosContacto(data) {
     el.href = `tel:${numTel}`;
   });
 
-  const emailVal = data.email_contacto || "contacto@crediavanza.pe";
+  const emailVal = data.email_contacto || "crediavanzape@gmail.com";
   document.querySelectorAll(".cfg-email-link").forEach(el => {
     el.href = `mailto:${emailVal}`;
   });
