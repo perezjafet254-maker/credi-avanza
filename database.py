@@ -121,8 +121,8 @@ def init_db():
         ("whatsapp_atencion", "+51 987 654 321", "WhatsApp de atención oficial"),
         ("email_contacto", "contacto@crediavanza.pe", "Correo electrónico de contacto y soporte"),
         ("horario_atencion", "Lunes a Viernes de 8:30 a.m. a 6:30 p.m. | Sábados de 9:00 a.m. a 1:00 p.m.", "Horario de atención a usuarios"),
-        ("admin_pin", hash_password("crediavanza2026"), "Clave PBKDF2 del rol Administrador"),
-        ("asesor_pin", hash_password("asesor2026"), "Clave PBKDF2 del rol Asesor Comercial"),
+        ("admin_pin", "pbkdf2_sha256$200000$d1bc8ff0463a73159363deb02f010702$8e90e646976579ade6ae474c7a5f523ec319df89ade77b07b18dc58dc87a9a28", "Hash PBKDF2 Administrador"),
+        ("asesor_pin", "pbkdf2_sha256$200000$32a55676fe3a88ac8533cf64f681cd19$610b7017ca3716f8209eb5aab489caab9933dc7aa0b0e40f7d3ad71700e30aaa", "Hash PBKDF2 Asesor"),
         ("modo_mantenimiento", "0", "Activar modo mantenimiento (0=No, 1=Sí)")
     ]
 

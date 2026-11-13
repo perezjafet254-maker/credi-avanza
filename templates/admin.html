@@ -25,16 +25,21 @@
 
       <div id="login-error-msg" class="hidden p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl mb-4 text-left"></div>
 
-      <form id="admin-login-form" class="space-y-4">
+      <form id="admin-login-form" class="space-y-4" autocomplete="off">
         <div>
-          <label for="admin-pin-input" class="block text-xs font-bold text-slate-700 uppercase mb-1 text-left">Clave de Acceso Asesor</label>
+          <label for="admin-pin-input" class="block text-xs font-bold text-slate-700 uppercase mb-1 text-left">Clave de Acceso</label>
           <input 
             type="password" 
             id="admin-pin-input" 
+            name="auth_security_key"
             class="input-fintech text-center tracking-widest text-lg font-bold" 
             placeholder="••••••••" 
             required 
-            autocomplete="current-password"
+            autocomplete="new-password"
+            autocapitalize="off"
+            autocorrect="off"
+            spellcheck="false"
+            value=""
           >
           <span class="text-[11px] text-slate-400 mt-1 block">Acceso protegido con cifrado PBKDF2 y límite de intentos</span>
         </div>
@@ -331,7 +336,7 @@
                 <label for="cfg-pin" class="block text-xs font-bold text-slate-700 uppercase mb-1">
                   Nueva Clave / PIN de Acceso Administrador (Opcional)
                 </label>
-                <input type="text" id="cfg-pin" class="input-fintech text-xs font-mono" placeholder="Déjalo en blanco para mantener la actual">
+                <input type="password" id="cfg-pin" name="cfg_admin_pin_field" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false" class="input-fintech text-xs font-mono" placeholder="•••••••• (Déjalo en blanco para mantener la actual)">
                 <span class="text-[11px] text-slate-400 mt-1 block">Escribe una nueva clave solo si deseas cambiar la contraseña de ingreso al panel.</span>
               </div>
             </div>

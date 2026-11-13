@@ -80,6 +80,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (tabBtnConfig) tabBtnConfig.addEventListener("click", () => activarTab("config"));
   if (btnCancelarConfig) btnCancelarConfig.addEventListener("click", () => cargarConfiguracionAdmin());
 
+  const pinInput = document.getElementById("admin-pin-input");
+  if (pinInput) {
+    pinInput.value = "";
+    pinInput.setAttribute("autocomplete", "new-password");
+  }
+
   if (ADMIN_TOKEN) {
     verificarSesion();
   } else {
@@ -89,8 +95,9 @@ document.addEventListener("DOMContentLoaded", () => {
   if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const pin = document.getElementById("admin-pin-input").value;
-      await intentarLogin(pin);
+      const pinVal = pinInput ? pinInput.value : "";
+      if (pinInput) pinInput.value = "";
+      await intentarLogin(pinVal);
     });
   }
 
@@ -174,6 +181,7 @@ function mostrarDashboard() {
 
 async function intentarLogin(pin) {
   const errBox = document.getElementById("login-error-msg");
+  const pinInput = document.getElementById("admin-pin-input");
   errBox.classList.add("hidden");
 
   try {
@@ -201,6 +209,10 @@ async function intentarLogin(pin) {
   } catch (err) {
     errBox.textContent = "Error de conexión segura con el servidor.";
     errBox.classList.remove("hidden");
+  } finally {
+    if (pinInput) {
+      pinInput.value = "";
+    }
   }
 }
 
