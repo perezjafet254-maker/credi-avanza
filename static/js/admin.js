@@ -274,7 +274,8 @@ function actualizarMetricas(lista) {
   const pendientes = lista.filter(s => s.estado === "PENDIENTE").length;
   const enEvaluacion = lista.filter(s => s.estado === "EN_EVALUACION").length;
   const aprobados = lista.filter(s => s.estado === "APROBADO").length;
-  const montoTotal = lista.reduce((sum, s) => sum + s.monto, 0);
+  const rechazados = lista.filter(s => s.estado === "RECHAZADO").length;
+  const montoTotal = lista.reduce((sum, s) => sum + (parseFloat(s.monto) || 0), 0);
 
   const statTotal = document.getElementById("stat-total");
   const badgeTotal = document.getElementById("badge-total-solicitudes");
@@ -289,6 +290,9 @@ function actualizarMetricas(lista) {
 
   const statAprobados = document.getElementById("stat-aprobados");
   if (statAprobados) statAprobados.textContent = aprobados;
+
+  const statRechazados = document.getElementById("stat-rechazados");
+  if (statRechazados) statRechazados.textContent = rechazados;
 
   const statMonto = document.getElementById("stat-monto-total");
   if (statMonto) statMonto.textContent = `S/ ${montoTotal.toLocaleString("es-PE", { minimumFractionDigits: 2 })}`;

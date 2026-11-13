@@ -20,14 +20,77 @@ from security import (
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "crediavanza.db")
 
-def get_connection():
+class DBCursor:
+    def __init__(self, cur, is_postgres: bool):
+        self.cur = cur
+        self.is_postgres = is_postgres
+
+    def execute(self, sql: str, params=None):
+        if self.is_postgres:
+            sql_adapted = sql.replace("?", "%s")
+            if params is not None:
+                return self.cur.execute(sql_adapted, params)
+            return self.cur.execute(sql_adapted)
+        else:
+            if params is not None:
+                return self.cur.execute(sql, params)
+            return self.cur.execute(sql)
+
+    def fetchone(self):
+        return self.cur.fetchone()
+
+    def fetchall(self):
+        return self.cur.fetchall()
+
+    def __iter__(self):
+        return iter(self.cur)
+
+    @property
+    def rowcount(self):
+        return self.cur.rowcount
+
+class DBConnection:
+    def __init__(self, raw_conn, is_postgres: bool):
+        self.conn = raw_conn
+        self.is_postgres = is_postgres
+
+    def cursor(self):
+        if self.is_postgres:
+            import psycopg2.extras
+            cur = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        else:
+            cur = self.conn.cursor()
+        return DBCursor(cur, self.is_postgres)
+
+    def commit(self):
+        self.conn.commit()
+
+    def rollback(self):
+        self.conn.rollback()
+
+    def close(self):
+        self.conn.close()
+
+def get_connection() -> DBConnection:
+    db_url = os.environ.get("DATABASE_URL")
+    if db_url and (db_url.startswith("postgres://") or db_url.startswith("postgresql://")):
+        try:
+            import psycopg2
+            conn = psycopg2.connect(db_url)
+            return DBConnection(conn, is_postgres=True)
+        except Exception as e:
+            print(f"[ADVERTENCIA DB] Error al conectar a PostgreSQL ({e}). Usando SQLite como respaldo.")
+    
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
-    # Optimizaciones de rendimiento y seguridad en SQLite
-    conn.execute("PRAGMA journal_mode = WAL;")
-    conn.execute("PRAGMA foreign_keys = ON;")
-    conn.execute("PRAGMA busy_timeout = 5000;")
-    return conn
+    try:
+        conn.execute("PRAGMA journal_mode = WAL;")
+        conn.execute("PRAGMA foreign_keys = ON;")
+        conn.execute("PRAGMA busy_timeout = 5000;")
+    except Exception:
+        pass
+    return DBConnection(conn, is_postgres=False)
+
 
 def init_db():
     conn = get_connection()
