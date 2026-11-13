@@ -7,7 +7,7 @@
 const AppState = {
   monto: 5000,
   plazo: 24,
-  finalidad: "consolidacion",
+  finalidad: "Libre disponibilidad personal",
   cuotaEstimada: 0,
   teaReferencial: 28.5,
   desgravamenMensual: 0.075,
@@ -451,31 +451,43 @@ function validarPaso1() {
   const finalidadSelect = document.getElementById("form-finalidad");
 
   let valido = true;
+  let primerInvalido = null;
 
-  const monto = parseFloat(montoInput.value);
+  const monto = parseFloat(montoInput ? montoInput.value : 5000);
   if (isNaN(monto) || monto < 500 || monto > 30000) {
-    mostrarError(montoInput, "Selecciona un monto entre S/ 500 y S/ 30,000.");
+    if (montoInput) mostrarError(montoInput, "Selecciona un monto entre S/ 500 y S/ 30,000.");
     valido = false;
+    if (!primerInvalido) primerInvalido = montoInput;
   } else {
-    limpiarError(montoInput);
+    if (montoInput) limpiarError(montoInput);
     AppState.monto = monto;
   }
 
-  const plazo = parseInt(plazoSelect.value);
+  const plazo = parseInt(plazoSelect ? plazoSelect.value : 24);
   if (isNaN(plazo) || plazo <= 0) {
-    mostrarError(plazoSelect, "Selecciona un plazo válido.");
+    if (plazoSelect) mostrarError(plazoSelect, "Selecciona un plazo válido.");
     valido = false;
+    if (!primerInvalido) primerInvalido = plazoSelect;
   } else {
-    limpiarError(plazoSelect);
+    if (plazoSelect) limpiarError(plazoSelect);
     AppState.plazo = plazo;
   }
 
-  if (!finalidadSelect.value) {
-    mostrarError(finalidadSelect, "Indica la finalidad principal de tu préstamo.");
-    valido = false;
+  const finalidadVal = finalidadSelect ? finalidadSelect.value : "";
+  if (!finalidadVal) {
+    if (finalidadSelect) {
+      finalidadSelect.value = "Libre disponibilidad personal";
+      AppState.finalidad = "Libre disponibilidad personal";
+      limpiarError(finalidadSelect);
+    }
   } else {
-    limpiarError(finalidadSelect);
-    AppState.finalidad = finalidadSelect.value;
+    if (finalidadSelect) limpiarError(finalidadSelect);
+    AppState.finalidad = finalidadVal;
+  }
+
+  if (!valido && primerInvalido) {
+    primerInvalido.scrollIntoView({ behavior: "smooth", block: "center" });
+    try { primerInvalido.focus(); } catch (e) {}
   }
 
   actualizarSimulador();
@@ -487,64 +499,65 @@ function validarPaso1() {
  */
 function validarPaso2() {
   let valido = true;
+  let primerInvalido = null;
+
+  function setInvalido(inputEl, msg) {
+    if (!inputEl) return;
+    mostrarError(inputEl, msg);
+    valido = false;
+    if (!primerInvalido) primerInvalido = inputEl;
+  }
 
   // Nombres
   const nombresInput = document.getElementById("form-nombres");
-  if (!nombresInput.value.trim() || nombresInput.value.trim().length < 2) {
-    mostrarError(nombresInput, "Ingresa tus nombres completos.");
-    valido = false;
+  if (!nombresInput || !nombresInput.value.trim() || nombresInput.value.trim().length < 2) {
+    setInvalido(nombresInput, "Ingresa tus nombres completos.");
   } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s'-]+$/.test(nombresInput.value.trim())) {
-    mostrarError(nombresInput, "Ingresa únicamente caracteres alfabéticos válidos.");
-    valido = false;
+    setInvalido(nombresInput, "Ingresa únicamente caracteres alfabéticos válidos.");
   } else {
     limpiarError(nombresInput);
   }
 
   // Apellidos
   const apellidosInput = document.getElementById("form-apellidos");
-  if (!apellidosInput.value.trim() || apellidosInput.value.trim().length < 2) {
-    mostrarError(apellidosInput, "Ingresa tus apellidos completos.");
-    valido = false;
+  if (!apellidosInput || !apellidosInput.value.trim() || apellidosInput.value.trim().length < 2) {
+    setInvalido(apellidosInput, "Ingresa tus apellidos completos.");
   } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s'-]+$/.test(apellidosInput.value.trim())) {
-    mostrarError(apellidosInput, "Ingresa únicamente caracteres alfabéticos válidos.");
-    valido = false;
+    setInvalido(apellidosInput, "Ingresa únicamente caracteres alfabéticos válidos.");
   } else {
     limpiarError(apellidosInput);
   }
 
   // Tipo y Número de Documento
-  const tipoDoc = document.getElementById("form-tipo-documento").value;
+  const selTipoDoc = document.getElementById("form-tipo-documento");
+  const tipoDoc = selTipoDoc ? selTipoDoc.value : "DNI";
   const numDocInput = document.getElementById("form-numero-documento");
-  const docVal = numDocInput.value.trim().replace(/\s/g, "");
+  const docVal = numDocInput ? numDocInput.value.trim().replace(/\s/g, "") : "";
 
   if (tipoDoc === "DNI") {
     if (!/^\d{8}$/.test(docVal)) {
-      mostrarError(numDocInput, "El DNI peruano debe tener exactamente 8 dígitos numéricos.");
-      valido = false;
+      setInvalido(numDocInput, "El DNI peruano debe tener exactamente 8 dígitos numéricos.");
     } else {
-      limpiarError(numDocInput);
+      if (numDocInput) limpiarError(numDocInput);
     }
   } else if (tipoDoc === "CE") {
     if (!/^[a-zA-Z0-9]{9,12}$/.test(docVal)) {
-      mostrarError(numDocInput, "El Carné de Extranjería debe tener entre 9 y 12 caracteres alfanuméricos.");
-      valido = false;
+      setInvalido(numDocInput, "El Carné de Extranjería debe tener entre 9 y 12 caracteres alfanuméricos.");
     } else {
-      limpiarError(numDocInput);
+      if (numDocInput) limpiarError(numDocInput);
     }
-  } else if (tipoDoc === "PASAPORTE") {
+  } else {
     if (!/^[a-zA-Z0-9]{6,12}$/.test(docVal)) {
-      mostrarError(numDocInput, "El pasaporte debe tener entre 6 y 12 caracteres alfanuméricos.");
-      valido = false;
+      setInvalido(numDocInput, "El documento debe tener entre 6 y 12 caracteres.");
     } else {
-      limpiarError(numDocInput);
+      if (numDocInput) limpiarError(numDocInput);
     }
   }
 
   // Fecha de Nacimiento (Mayor de 18 años)
   const fnInput = document.getElementById("form-fecha-nacimiento");
-  if (!fnInput.value) {
-    mostrarError(fnInput, "Ingresa tu fecha de nacimiento.");
-    valido = false;
+  if (!fnInput || !fnInput.value) {
+    setInvalido(fnInput, "Ingresa tu fecha de nacimiento.");
   } else {
     const fn = new Date(fnInput.value);
     const hoy = new Date();
@@ -555,44 +568,39 @@ function validarPaso2() {
     }
 
     if (isNaN(edad) || edad < 18) {
-      mostrarError(fnInput, "Debes ser mayor de 18 años para continuar con la solicitud.");
-      valido = false;
+      setInvalido(fnInput, "Debes ser mayor de 18 años para solicitar un préstamo.");
     } else if (edad > 85) {
-      mostrarError(fnInput, "La edad máxima de evaluación es 85 años.");
-      valido = false;
+      setInvalido(fnInput, "La edad máxima de evaluación es 85 años.");
     } else {
       limpiarError(fnInput);
     }
   }
 
-  // Teléfono Celular (9 dígitos peruanos, empieza en 9)
+  // Teléfono Celular (9 dígitos peruanos)
   const telInput = document.getElementById("form-telefono");
-  const telVal = telInput.value.trim().replace(/\s/g, "");
+  const telVal = telInput ? telInput.value.trim().replace(/\s/g, "") : "";
   if (!/^9\d{8}$/.test(telVal)) {
-    mostrarError(telInput, "El celular debe tener 9 dígitos y empezar con 9 (ej. 987654321).");
-    valido = false;
+    setInvalido(telInput, "El celular debe tener 9 dígitos y empezar con 9 (ej. 987654321).");
   } else {
-    limpiarError(telInput);
+    if (telInput) limpiarError(telInput);
   }
 
   // WhatsApp
   const wspInput = document.getElementById("form-whatsapp");
-  const wspVal = wspInput.value.trim().replace(/\s/g, "");
+  const wspVal = wspInput ? wspInput.value.trim().replace(/\s/g, "") : "";
   if (!/^9\d{8}$/.test(wspVal)) {
-    mostrarError(wspInput, "El WhatsApp debe tener 9 dígitos y empezar con 9.");
-    valido = false;
+    setInvalido(wspInput, "El WhatsApp debe tener 9 dígitos y empezar con 9.");
   } else {
-    limpiarError(wspInput);
+    if (wspInput) limpiarError(wspInput);
   }
 
   // Email
   const emailInput = document.getElementById("form-email");
-  const emailVal = emailInput.value.trim();
+  const emailVal = emailInput ? emailInput.value.trim() : "";
   if (!/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(emailVal)) {
-    mostrarError(emailInput, "Ingresa un correo electrónico válido (ej. juan@gmail.com).");
-    valido = false;
+    setInvalido(emailInput, "Ingresa un correo electrónico válido (ej. juan@gmail.com).");
   } else {
-    limpiarError(emailInput);
+    if (emailInput) limpiarError(emailInput);
   }
 
   // Ubicación: Departamento, Provincia, Distrito
@@ -600,53 +608,52 @@ function validarPaso2() {
   const provSelect = document.getElementById("form-provincia");
   const distSelect = document.getElementById("form-distrito");
 
-  if (!depSelect.value) {
-    mostrarError(depSelect, "Selecciona tu departamento de residencia.");
-    valido = false;
+  if (!depSelect || !depSelect.value) {
+    setInvalido(depSelect, "Selecciona tu departamento de residencia.");
   } else {
     limpiarError(depSelect);
   }
 
-  if (!provSelect.value) {
-    mostrarError(provSelect, "Selecciona tu provincia.");
-    valido = false;
+  if (!provSelect || !provSelect.value) {
+    setInvalido(provSelect, "Selecciona tu provincia.");
   } else {
     limpiarError(provSelect);
   }
 
-  if (!distSelect.value) {
-    mostrarError(distSelect, "Selecciona tu distrito.");
-    valido = false;
+  if (!distSelect || !distSelect.value) {
+    setInvalido(distSelect, "Selecciona tu distrito.");
   } else {
     limpiarError(distSelect);
   }
 
   // Dirección
   const dirInput = document.getElementById("form-direccion");
-  if (!dirInput.value.trim() || dirInput.value.trim().length < 5) {
-    mostrarError(dirInput, "Ingresa tu dirección domiciliaria completa (calle/av., número, dpto).");
-    valido = false;
+  if (!dirInput || !dirInput.value.trim() || dirInput.value.trim().length < 4) {
+    setInvalido(dirInput, "Ingresa tu dirección domiciliaria completa.");
   } else {
     limpiarError(dirInput);
   }
 
   // Situación laboral
   const labSelect = document.getElementById("form-situacion-laboral");
-  if (!labSelect.value) {
-    mostrarError(labSelect, "Selecciona tu situación laboral actual.");
-    valido = false;
+  if (!labSelect || !labSelect.value) {
+    setInvalido(labSelect, "Selecciona tu situación laboral actual.");
   } else {
     limpiarError(labSelect);
   }
 
   // Ingresos mensuales
   const ingInput = document.getElementById("form-ingresos");
-  const ingVal = parseFloat(ingInput.value);
+  const ingVal = ingInput ? parseFloat(ingInput.value) : 0;
   if (isNaN(ingVal) || ingVal < 300) {
-    mostrarError(ingInput, "Indica tus ingresos mensuales netos aproximados (mínimo S/ 300).");
-    valido = false;
+    setInvalido(ingInput, "Indica tus ingresos mensuales netos aproximados (mínimo S/ 300).");
   } else {
-    limpiarError(ingInput);
+    if (ingInput) limpiarError(ingInput);
+  }
+
+  if (!valido && primerInvalido) {
+    primerInvalido.scrollIntoView({ behavior: "smooth", block: "center" });
+    try { primerInvalido.focus(); } catch (e) {}
   }
 
   return valido;
@@ -656,46 +663,55 @@ function validarPaso2() {
  * Genera el resumen visual en el Paso 3 para revisión del usuario
  */
 function generarResumenPaso3() {
-  const monto = AppState.monto;
-  const plazo = AppState.plazo;
-  const cuota = AppState.cuotaEstimada;
+  function safeSet(id, text) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  }
+
+  const monto = AppState.monto || 5000;
+  const plazo = AppState.plazo || 24;
+  const cuota = AppState.cuotaEstimada || 0;
 
   const finalidadSelect = document.getElementById("form-finalidad");
-  const finalidadTexto = finalidadSelect.options[finalidadSelect.selectedIndex]?.text || "";
+  const finalidadTexto = finalidadSelect && finalidadSelect.selectedIndex >= 0
+    ? (finalidadSelect.options[finalidadSelect.selectedIndex]?.text || finalidadSelect.value)
+    : (AppState.finalidad || "Libre disponibilidad personal");
 
-  const nombres = document.getElementById("form-nombres").value.trim();
-  const apellidos = document.getElementById("form-apellidos").value.trim();
-  const tipoDoc = document.getElementById("form-tipo-documento").value;
-  const numDoc = document.getElementById("form-numero-documento").value.trim();
-  const fechaNac = document.getElementById("form-fecha-nacimiento").value;
-  const telefono = document.getElementById("form-telefono").value.trim();
-  const whatsapp = document.getElementById("form-whatsapp").value.trim();
-  const email = document.getElementById("form-email").value.trim();
+  const nombres = document.getElementById("form-nombres")?.value.trim() || "";
+  const apellidos = document.getElementById("form-apellidos")?.value.trim() || "";
+  const tipoDoc = document.getElementById("form-tipo-documento")?.value || "DNI";
+  const numDoc = document.getElementById("form-numero-documento")?.value.trim() || "";
+  const fechaNac = document.getElementById("form-fecha-nacimiento")?.value || "";
+  const telefono = document.getElementById("form-telefono")?.value.trim() || "";
+  const whatsapp = document.getElementById("form-whatsapp")?.value.trim() || "";
+  const email = document.getElementById("form-email")?.value.trim() || "";
   
-  const dep = document.getElementById("form-departamento").value;
-  const prov = document.getElementById("form-provincia").value;
-  const dist = document.getElementById("form-distrito").value;
-  const direccion = document.getElementById("form-direccion").value.trim();
+  const dep = document.getElementById("form-departamento")?.value || "";
+  const prov = document.getElementById("form-provincia")?.value || "";
+  const dist = document.getElementById("form-distrito")?.value || "";
+  const direccion = document.getElementById("form-direccion")?.value.trim() || "";
 
   const labSelect = document.getElementById("form-situacion-laboral");
-  const laboralTexto = labSelect.options[labSelect.selectedIndex]?.text || "";
-  const ingresos = parseFloat(document.getElementById("form-ingresos").value);
+  const laboralTexto = labSelect && labSelect.selectedIndex >= 0
+    ? (labSelect.options[labSelect.selectedIndex]?.text || labSelect.value)
+    : "";
+  const ingresosVal = parseFloat(document.getElementById("form-ingresos")?.value || 0);
 
-  // Inyectar en elementos de resumen
-  document.getElementById("resumen-monto").textContent = `S/ ${formatearNumero(monto)}`;
-  document.getElementById("resumen-plazo").textContent = `${plazo} meses`;
-  document.getElementById("resumen-cuota").textContent = `S/ ${formatearNumero(cuota)} / mes*`;
-  document.getElementById("resumen-finalidad").textContent = finalidadTexto;
+  // Inyectar en elementos de resumen con protección total contra null
+  safeSet("resumen-monto", `S/ ${formatearNumero(monto)}`);
+  safeSet("resumen-plazo", `${plazo} meses`);
+  safeSet("resumen-cuota", `S/ ${formatearNumero(cuota)} / mes*`);
+  safeSet("resumen-finalidad", finalidadTexto);
 
-  document.getElementById("resumen-titular").textContent = `${nombres} ${apellidos}`;
-  document.getElementById("resumen-documento").textContent = `${tipoDoc}: ${numDoc}`;
-  document.getElementById("resumen-fecha-nac").textContent = fechaNac;
-  document.getElementById("resumen-contacto").textContent = `Cel: ${telefono} | WhatsApp: ${whatsapp}`;
-  document.getElementById("resumen-email").textContent = email;
-  document.getElementById("resumen-ubicacion").textContent = `${dist}, ${prov}, ${dep}`;
-  document.getElementById("resumen-direccion").textContent = direccion;
-  document.getElementById("resumen-laboral").textContent = laboralTexto;
-  document.getElementById("resumen-ingresos").textContent = `S/ ${formatearNumero(ingresos)} / mes`;
+  safeSet("resumen-titular", `${nombres} ${apellidos}`);
+  safeSet("resumen-documento", `${tipoDoc}: ${numDoc}`);
+  safeSet("resumen-fecha-nac", fechaNac);
+  safeSet("resumen-contacto", `Cel: ${telefono} | WhatsApp: ${whatsapp}`);
+  safeSet("resumen-email", email);
+  safeSet("resumen-ubicacion", `${dist}, ${prov}, ${dep}`);
+  safeSet("resumen-direccion", direccion);
+  safeSet("resumen-laboral", laboralTexto);
+  safeSet("resumen-ingresos", `S/ ${formatearNumero(ingresosVal)} / mes`);
 }
 
 /**
